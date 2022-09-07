@@ -5,15 +5,15 @@
     <div class="home-banner-area mb-4 pt-3">
         <div class="container">
             <div class="row gutters-10 position-relative">
-                <div class="col-lg-3 position-static d-none d-lg-block">
+                <!--<div class="col-lg-3 position-static d-none d-lg-block">
                     @include('frontend.partials.category_menu')
-                </div>
+                </div>-->
 
                 @php
                     $num_todays_deal = count($todays_deal_products);
                 @endphp
 
-                <div class="@if($num_todays_deal > 0) col-lg-7 @else col-lg-9 @endif">
+                <div class="@if($num_todays_deal > 0) col-lg-11 @else col-lg-12 @endif">
                     @if (get_setting('home_slider_images') != null)
                         <div class="aiz-carousel dots-inside-bottom mobile-img-auto-height" data-arrows="true" data-dots="true" data-autoplay="true">
                             @php $slider_images = json_decode(get_setting('home_slider_images'), true);  @endphp
@@ -309,9 +309,8 @@
     @endif
 
     {{-- Best Seller --}}
-    <div id="section_best_sellers">
-
-    </div>
+    <!-- <div id="section_best_sellers">
+    </div> -->
 
     {{-- Top 10 categories and Brands --}}
     @if (get_setting('top10_categories') != null && get_setting('top10_brands') != null)
@@ -422,10 +421,10 @@
                 $('#section_home_categories').html(data);
                 AIZ.plugins.slickCarousel();
             });
-            $.post('{{ route('home.section.best_sellers') }}', {_token:'{{ csrf_token() }}'}, function(data){
+            /*$.post('{{ route('home.section.best_sellers') }}', {_token:'{{ csrf_token() }}'}, function(data){
                 $('#section_best_sellers').html(data);
                 AIZ.plugins.slickCarousel();
-            });
+            });*/
         });
     </script>
 @endsection

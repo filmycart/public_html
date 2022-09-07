@@ -268,7 +268,7 @@
         @endif
     </div>
     @if ( get_setting('header_menu_labels') !=  null )
-        <div class="bg-white border-top border-gray-200 py-1">
+        <!-- <div class="bg-white border-top border-gray-200 py-1">
             <div class="container">
                 <ul class="list-inline mb-0 pl-0 mobile-hor-swipe text-center">
                     @foreach (json_decode( get_setting('header_menu_labels'), true) as $key => $value)
@@ -280,9 +280,16 @@
                     @endforeach
                 </ul>
             </div>
-        </div>
+        </div> -->
     @endif
+    <div class="bg-white border-top border-gray-200 py-1">
+        <div class="col-lg-3 position-static d-none d-lg-block">
+            @include('frontend.partials.category_menu_new')
+        </div>
+    </div>
 </header>
+
+
 
 <div class="modal fade" id="order_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
