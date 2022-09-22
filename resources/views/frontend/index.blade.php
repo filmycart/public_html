@@ -25,9 +25,9 @@
                                             src="{{ uploaded_asset($slider_images[$key]) }}"
                                             alt="{{ env('APP_NAME')}} promo"
                                             @if(count($featured_categories) == 0)
-                                            height="457"
+                                            height="257"
                                             @else
-                                            height="315"
+                                            height="215"
                                             @endif
                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder-rect.jpg') }}';"
                                         >
