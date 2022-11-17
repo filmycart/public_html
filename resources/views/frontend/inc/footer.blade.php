@@ -1,4 +1,4 @@
-<section class="bg-white border-top mt-auto">
+<!--<section class="bg-white border-top mt-auto">
     <div class="container">
         <div class="row no-gutters">
             <div class="col-lg-3 col-md-6">
@@ -27,12 +27,12 @@
             </div>
         </div>
     </div>
-</section>
+</section>-->
 
 <section class="bg-dark py-5 text-light footer-widget">
     <div class="container">
         <div class="row">
-            <div class="col-lg-5 col-xl-4 text-center text-md-left">
+            <!--<div class="col-lg-5 col-xl-4 text-center text-md-left">
                 <div class="mt-4">
                     <a href="{{ route('home') }}" class="d-block">
                         @if(get_setting('footer_logo') != null)
@@ -67,6 +67,45 @@
                             </a>
                         @endif
                     </div>
+                </div>
+            </div>-->
+            <div class="col-lg-3 ml-xl-auto col-md-4 mr-0">
+                <div class="text-center text-md-left mt-4">
+                    <h4 class="fs-13 text-uppercase fw-600 border-bottom border-gray-900 pb-2 mb-4">
+                        {{ translate('Policy') }}
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a class="text-reset" href="{{ route('terms') }}">
+                                <span class="d-block opacity-30">
+                                    {{ translate('Terms & Conditions') }}
+                                </span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a class="text-reset" href="{{ route('returnpolicy') }}">
+                                <span class="d-block opacity-30">
+                                    {{ translate('Return Policy') }}
+                                </span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a class="text-reset" href="{{ route('supportpolicy') }}">
+                                <span class="d-block opacity-30">
+                                    {{ translate('Support Policy') }}
+                                </span>
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a class="text-reset" href="{{ route('privacypolicy') }}">
+                                <span class="d-block opacity-30">
+                                    {{ translate('Privacy Policy') }}
+                                </span>
+                            </a>
+                        </li>
+
+                       
+                    </ul>
                 </div>
             </div>
             <div class="col-lg-3 ml-xl-auto col-md-4 mr-0">
@@ -153,14 +192,14 @@
                     </ul>
                 </div>
                 @if (get_setting('vendor_system_activation') == 1)
-                    <div class="text-center text-md-left mt-4">
+                    <!--<div class="text-center text-md-left mt-4">
                         <h4 class="fs-13 text-uppercase fw-600 border-bottom border-gray-900 pb-2 mb-4">
                             {{ translate('Be a Seller') }}
                         </h4>
                         <a href="{{ route('shops.create') }}" class="btn btn-primary btn-sm shadow-md">
                             {{ translate('Apply Now') }}
                         </a>
-                    </div>
+                    </div>-->
                 @endif
             </div>
         </div>

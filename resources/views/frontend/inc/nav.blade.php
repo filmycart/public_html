@@ -9,6 +9,7 @@
 </div>
 @endif
 <!-- Top Bar -->
+
 <div class="top-navbar bg-white border-bottom border-soft-secondary z-1035 h-35px h-sm-auto">
     <div class="container">
         <div class="row">
@@ -64,99 +65,7 @@
                     </li>
                     @endif
                 </ul>
-            </div>
-
-            <div class="col-5 text-right d-none d-lg-block">
-                <ul class="list-inline mb-0 h-100 d-flex justify-content-end align-items-center">
-                    @if (get_setting('helpline_number'))
-                        <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
-                            <a href="tel:{{ get_setting('helpline_number') }}" class="text-reset d-inline-block opacity-60 py-2">
-                                <i class="la la-phone"></i>
-                                <span>{{ translate('Help line')}}</span>  
-                                <span>{{ get_setting('helpline_number') }}</span>    
-                            </a>
-                        </li>
-                    @endif
-                    @auth
-                        @if(isAdmin())
-                            <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
-                                <a href="{{ route('admin.dashboard') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('My Panel')}}</a>
-                            </li>
-                        @else
-
-                            <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0 dropdown">
-                                <a class="dropdown-toggle no-arrow text-reset" data-toggle="dropdown" href="javascript:void(0);" role="button" aria-haspopup="false" aria-expanded="false">
-                                    <span class="">
-                                        <span class="position-relative d-inline-block">
-                                            <i class="las la-bell fs-18"></i>
-                                            @if(count(Auth::user()->unreadNotifications) > 0)
-                                                <span class="badge badge-sm badge-dot badge-circle badge-primary position-absolute absolute-top-right"></span>
-                                            @endif
-                                        </span>
-                                    </span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg py-0">
-                                    <div class="p-3 bg-light border-bottom">
-                                        <h6 class="mb-0">{{ translate('Notifications') }}</h6>
-                                    </div>
-                                    <div class="px-3 c-scrollbar-light overflow-auto " style="max-height:300px;">
-                                        <ul class="list-group list-group-flush" >
-                                            @forelse(Auth::user()->unreadNotifications as $notification)
-                                                <li class="list-group-item">
-                                                    @if($notification->type == 'App\Notifications\OrderNotification')
-                                                        @if(Auth::user()->user_type == 'customer')
-                                                        <a href="{{route('purchase_history.details', encrypt($notification->data['order_id']))}}" class="text-reset">
-                                                            <span class="ml-2">
-                                                                {{translate('Order code: ')}} {{$notification->data['order_code']}} {{ translate('has been '. ucfirst(str_replace('_', ' ', $notification->data['status'])))}}
-                                                            </span>
-                                                        </a>
-                                                        @elseif (Auth::user()->user_type == 'seller')
-                                                            <a href="{{ route('seller.orders.show', encrypt($notification->data['order_id'])) }}" class="text-reset">
-                                                                <span class="ml-2">
-                                                                    {{translate('Order code: ')}} {{$notification->data['order_code']}} {{ translate('has been '. ucfirst(str_replace('_', ' ', $notification->data['status'])))}}
-                                                                </span>
-                                                            </a>
-                                                        @endif
-                                                    @endif
-                                                </li>
-                                            @empty
-                                                <li class="list-group-item">
-                                                    <div class="py-4 text-center fs-16">
-                                                        {{ translate('No notification found') }}
-                                                    </div>
-                                                </li>
-                                            @endforelse
-                                        </ul>
-                                    </div>
-                                    <div class="text-center border-top">
-                                        <a href="{{ route('all-notifications') }}" class="text-reset d-block py-2">
-                                            {{translate('View All Notifications')}}
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
-                                @if (Auth::user()->user_type == 'seller')
-                                    <a href="{{ route('seller.dashboard') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('My Panel')}}</a>
-                                @else
-                                    <a href="{{ route('dashboard') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('My Panel')}}</a>
-                                @endif
-                            </li>
-                        @endif
-                        <li class="list-inline-item">
-                            <a href="{{ route('logout') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('Logout')}}</a>
-                        </li>
-                    @else
-                        <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
-                            <a href="{{ route('user.login') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('Login')}}</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a href="{{ route('user.registration') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('Registration')}}</a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
+            </div>            
         </div>
     </div>
 </div>
@@ -234,19 +143,19 @@
                         </a>
                     </div>
                 </div>
-
+                <div class="d-none d-lg-block ml-4 mr-0">
+                     @include('frontend.partials.profile')
+                </div>
                 <div class="d-none d-lg-block ml-3 mr-0">
                     <div class="" id="compare">
                         @include('frontend.partials.compare')
                     </div>
                 </div>
-
                 <div class="d-none d-lg-block ml-3 mr-0">
                     <div class="" id="wishlist">
                         @include('frontend.partials.wishlist')
                     </div>
                 </div>
-
                 <div class="d-none d-lg-block  align-self-stretch ml-3 mr-0" data-hover="dropdown">
                     <div class="nav-cart-box dropdown h-100" id="cart_items">
                         @include('frontend.partials.cart')
@@ -268,7 +177,7 @@
         @endif
     </div>
     @if ( get_setting('header_menu_labels') !=  null )
-        <div class="bg-white border-top border-gray-200 py-1">
+        <!-- <div class="bg-white border-top border-gray-200 py-1">
             <div class="container">
                 <ul class="list-inline mb-0 pl-0 mobile-hor-swipe text-center">
                     @foreach (json_decode( get_setting('header_menu_labels'), true) as $key => $value)
@@ -280,9 +189,17 @@
                     @endforeach
                 </ul>
             </div>
-        </div>
+        </div> -->
     @endif
+    <div class="bg-white border-top border-gray-200 py-1">
+        <div class="col-lg-3 position-static d-none d-lg-block">
+            @include('frontend.partials.category_menu_new')
+        </div>
+    </div>        
+
 </header>
+
+
 
 <div class="modal fade" id="order_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">

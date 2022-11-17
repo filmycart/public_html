@@ -1,0 +1,18 @@
+Searching 349 files for "mobile-img-auto-height"
+
+C:\wamp64\www\filmycart\public\assets\css\aiz-core.css:
+ 9331  /*slider mobile auto height*/
+ 9332  @media (max-width: 767.98px) {
+ 9333:     .mobile-img-auto-height img {
+ 9334          height: 300px;
+
+ 9335      }
+
+C:\wamp64\www\filmycart\public\assets\css\aiz-seller.css:
+ 6851  /*slider mobile auto height*/
+ 6852  @media (max-width: 767.98px) {
+ 6853:     .mobile-img-auto-height img{
+ 6854          height: 300px;
+ 6855      }
+
+2 matches across 2 files
