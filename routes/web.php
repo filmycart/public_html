@@ -46,6 +46,7 @@ use App\Http\Controllers\Payment\PaykuController;
 use App\Http\Controllers\ProductQueryController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\ContactUsFormController;
 
 /*
   |--------------------------------------------------------------------------
@@ -57,7 +58,6 @@ use App\Http\Controllers\WishlistController;
   | contains the "web" middleware group. Now create something great!
   |
  */
-
 Route::controller(DemoController::class)->group(function () {
     Route::get('/demo/cron_1', 'cron_1');
     Route::get('/demo/cron_2', 'cron_2');
@@ -104,6 +104,9 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/users/login/cart', 'cart_login')->name('cart.login.submit');
     // Route::get('/new-page', 'new_page')->name('new_page');
 
+    //Contact Page
+    Route::get('/contact', [ContactUsFormController::class, 'createForm']);
+    Route::post('/contact', [ContactUsFormController::class, 'ContactUsForm'])->name('contact.store');
 
     //Home Page
     Route::get('/', 'index')->name('home');

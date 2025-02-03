@@ -9,18 +9,18 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 /**
  * The PHPDriver includes php files which just populate ClassMetadataInfo
  * instances with plain PHP code.
+ *
+ * @template-extends FileDriver<ClassMetadata<object>>
  */
 class PHPDriver extends FileDriver
 {
     /**
      * @var ClassMetadata
-     * @psalm-var ClassMetadata<object>
+     * @phpstan-var ClassMetadata<object>
      */
     protected $metadata;
 
-    /**
-     * @param string|array<int, string>|FileLocator $locator
-     */
+    /** @param string|array<int, string>|FileLocator $locator */
     public function __construct($locator)
     {
         parent::__construct($locator, '.php');

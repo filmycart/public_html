@@ -228,6 +228,25 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header text-center bord-btm">
+                <h3 class="mb-0 h6 text-center">{{translate('UPI Payment Activation')}}</h3>
+            </div>
+            <div class="card-body">
+                <div class="clearfix">
+                    <img class="float-left" src="{{ static_asset('assets/img/cards/upi.png') }}" height="30">
+                    <label class="aiz-switch aiz-switch-success mb-0 float-right">
+                        <input type="checkbox" onchange="updateSettings(this, 'upi_payment')" <?php if(get_setting('upi_payment') == 1) echo "checked";?>>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="alert text-center" style="color: #004085;background-color: #cce5ff;border-color: #b8daff;margin-bottom:0;margin-top:10px;">
+                    {{ translate('You need to configure UPI correctly to enable this feature') }}. <a href="{{ route('payment_method.index') }}">{{ translate('Configure Now') }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header text-center bord-btm">
                 <h3 class="mb-0 h6 text-center">{{translate('Paypal Payment Activation')}}</h3>
             </div>
             <div class="card-body">

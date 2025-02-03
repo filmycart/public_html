@@ -3,6 +3,32 @@
     @section('content')
 
     <div class="row">
+             <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 h6 ">{{translate('UPI Credential')}}</h5>
+                </div>
+                <div class="card-body">
+                    <form class="form-horizontal" action="{{ route('payment_method.update') }}" method="POST">
+                        <input type="hidden" name="payment_method" value="upi">
+                        @csrf
+                        
+                        <div class="form-group row">
+                            <input type="hidden" name="types[]" value="UPI_KEY">
+                            <div class="col-md-4">
+                                <label class="col-from-label">{{translate('UPI Key')}}</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="UPI_KEY" value="{{  env('UPI_KEY') }}" placeholder="{{ translate('UPI Key') }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0 text-right">
+                            <button type="submit" class="btn btn-sm btn-primary">{{translate('Save')}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">

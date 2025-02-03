@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use KingFlamez\Rave\Helpers\Banks;
 use KingFlamez\Rave\Helpers\Beneficiary;
+use KingFlamez\Rave\Helpers\Bills;
 use KingFlamez\Rave\Helpers\Payments;
 use KingFlamez\Rave\Helpers\Transfers;
 
@@ -149,5 +150,15 @@ class Rave
     {
         $beneficiary = new Beneficiary($this->publicKey, $this->secretKey, $this->baseUrl);
         return $beneficiary;
+    }
+
+    /**
+     * Bill payments
+     * @return Bills
+     */
+    public function bill()
+    {
+        $bills = new Bills($this->publicKey, $this->secretKey, $this->baseUrl);
+        return $bills;
     }
 }

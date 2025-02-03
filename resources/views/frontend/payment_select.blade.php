@@ -152,6 +152,72 @@
                                                     </label>
                                                 </div>
                                             @endif
+                                            @if (get_setting('upi_payment') == 1)
+                                                <div class="col-6 col-md-4">
+                                                    <label class="aiz-megabox d-block mb-3">
+                                                        <input value="upi_payment" class="online_payment" type="radio"
+                                                            name="payment_option" checked>
+                                                        <span class="d-block aiz-megabox-elem p-3">
+                                                            <img src="{{ static_asset('assets/img/cards/upi.png') }}"
+                                                                class="img-fluid mb-2">
+                                                            <!-- <span class="d-block text-center">
+                                                                <span
+                                                                    class="d-block fw-600 fs-15">{{ translate('UPI') }}</span>
+                                                            </span> -->
+                                                        </span>
+                                                    </label>
+                                                    <?php
+                                                        if (isset($_POST['payment'])) {
+                                                            $key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
+                                                            $post_data = new stdClass();
+                                                            $post_data->key = $key;
+                                                            $post_data->client_txn_id = (string) rand(100000, 999999); // you can use this field to store order id;
+                                                            $post_data->amount = $_POST['txnAmount'];
+                                                            $post_data->p_info = "product_name";
+                                                            $post_data->customer_name = $_POST['customerName'];
+                                                            $post_data->customer_email = $_POST['customerEmail'];
+                                                            $post_data->customer_mobile = $_POST['customerMobile'];
+                                                            $post_data->redirect_url = "http://localhost/nachiyar-traders-live/checkout/payment_select"; // automatically ?client_txn_id=xxxxxx&txn_id=xxxxx will be added on redirect_url
+                                                            $post_data->udf1 = "extradata";
+                                                            $post_data->udf2 = "extradata";
+                                                            $post_data->udf3 = "extradata";
+
+                                                            $curl = curl_init();
+                                                            curl_setopt_array($curl, array(
+                                                                CURLOPT_URL => 'https://merchant.upigateway.com/api/create_order',
+                                                                CURLOPT_RETURNTRANSFER => true,
+                                                                CURLOPT_ENCODING => '',
+                                                                CURLOPT_MAXREDIRS => 10,
+                                                                CURLOPT_TIMEOUT => 30,
+                                                                CURLOPT_FOLLOWLOCATION => true,
+                                                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                                                CURLOPT_POSTFIELDS => json_encode($post_data),
+                                                                CURLOPT_HTTPHEADER => array(
+                                                                    'Content-Type: application/json'
+                                                                ),
+                                                            ));
+                                                            $response = curl_exec($curl);
+                                                            curl_close($curl);
+
+                                                            $result = json_decode($response, true);
+                                                            if ($result['status'] == true) {
+                                                                echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
+                                                                exit();
+                                                            }
+
+                                                            echo '<div class="alert alert-danger">' . $result['msg'] . '</div>';
+                                                        }
+                                                    ?>
+                                                    <form action="" method="post">
+                                                        <input type="text" name="txnAmount" value="{{ $total }}" class="form-control" placeholder="Enter Txn Amount" readonly><br>
+                                                        <input type="text" name="customerName" value="{{ Auth::user()->name }}" class="form-control" required>
+                                                        <input type="text" name="customerMobile" value="{{ Auth::user()->phone }}" maxlength="10" class="form-control" required><br>
+                                                        <input type="text" name="customerEmail" value="{{ Auth::user()->email }}" class="form-control" required><br>
+                                                        <input type="submit" name="payment" value="Pay Via UPI" class="btn btn-primary">
+                                                    </form>
+                                                </div>
+                                            @endif
                                             @if (get_setting('razorpay') == 1)
                                                 <div class="col-6 col-md-4">
                                                     <label class="aiz-megabox d-block mb-3">
@@ -642,5 +708,19 @@
                 }
             })
         })
+    </script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script type="text/javascript">
+        $(document).on("click", "#payment_option", function() {
+            alert('zzzzzzzzzz');
+            //$("#payment_option").click(function () {
+                /*$.ajax({
+                    url: "geeks.txt",
+                    success: function (result) {
+                        $("#h11").html(result);
+                    }
+                });*/
+            //});
+        });
     </script>
 @endsection

@@ -11,7 +11,7 @@
         "barryvdh/laravel-ide-helper": "^2.10",
         "cinetpay/cinetpay-php": "^1.9",
         "fideloper/proxy": "^4.0",
-        "guzzlehttp/guzzle": "^7.3",
+        "guzzlehttp/guzzle": "^7.9",
         "instamojo/instamojo-php": "^0.4.0",
         "intervention/image": "^2.5",
         "iyzico/iyzipay-php": "^2.0",
@@ -33,11 +33,13 @@
         "niklasravnsborg/laravel-pdf": "^4.0",
         "osenco/mpesa": "^1.20",
         "paypal/paypal-checkout-sdk": "dev-master",
+        "phonepe/phonepe-pg-php-sdk": "^1.0",
         "predis/predis": "^1.1",
         "razorpay/razorpay": "2.0.0",
         "sebacarrasco93/laravel-payku": "^1.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/db-dumper": "2.21.1",
+        "square/square": "^40.0",
         "stripe/stripe-php": "^7.95",
         "twilio/sdk": "^6.1",
         "unicodeveloper/laravel-paystack": "^1.0"
@@ -90,6 +92,24 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": [
+                {
+                    "dist": {
+                        "type": "zip",
+                        "url": "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-php-sdk/phonepe-pg-php-sdk.zip"
+                    },
+                    "name": "phonepe/phonepe-pg-php-sdk",
+                    "version": "1.0.0",
+                    "autoload": {
+                        "classmap": ["/"]
+                    }
+                }
+            ]
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

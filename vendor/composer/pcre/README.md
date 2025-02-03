@@ -6,9 +6,7 @@ PCRE wrapping library that offers type-safe `preg_*` replacements.
 This library gives you a way to ensure `preg_*` functions do not fail silently, returning
 unexpected `null`s that may not be handled.
 
-As of 3.0 this library enforces [`PREG_UNMATCHED_AS_NULL`](#preg_unmatched_as_null) usage
-for all matching and replaceCallback functions, [read more below](#preg_unmatched_as_null)
-to understand the implications.
+As of 2.0 this library also enforces [`PREG_UNMATCHED_AS_NULL`](#preg_unmatched_as_null) usage for all matching functions, [read more below](#preg_unmatched_as_null) to understand the implications.
 
 It thus makes it easier to work with static analysis tools like PHPStan or Psalm as it
 simplifies and reduces the possible return values from all the `preg_*` functions which
@@ -34,9 +32,7 @@ $ composer require composer/pcre
 Requirements
 ------------
 
-* PHP 7.4.0 is required for 3.x versions
-* PHP 7.2.0 is required for 2.x versions
-* PHP 5.3.2 is required for 1.x versions
+* PHP 5.3.2 is required but using the latest version of PHP is highly recommended.
 
 
 Basic usage
@@ -84,6 +80,23 @@ if (Preg::isMatch('{fo+}', $string, $matches)) // bool
 if (Preg::isMatchAll('{fo+}', $string, $matches)) // bool
 ```
 
+Finally the `Preg` class provides a few `*StrictGroups` method variants that ensure match groups
+are always present and thus non-nullable, making it easier to write type-safe code:
+
+```php
+use Composer\Pcre\Preg;
+
+// $matches is guaranteed to be an array of strings, if a subpattern does not match and produces a null it will throw
+if (Preg::matchStrictGroups('{fo+}', $string, $matches))
+if (Preg::matchAllStrictGroups('{fo+}', $string, $matches))
+```
+
+**Note:** This is generally safe to use as long as you do not have optional subpatterns (i.e. `(something)?`
+or `(something)*` or branches with a `|` that result in some groups not being matched at all).
+A subpattern that can match an empty string like `(.*)` is **not** optional, it will be present as an
+empty string in the matches. A non-matching subpattern, even if optional like `(?:foo)?` will anyway not be present in
+matches so it is also not a problem to use these with `*StrictGroups` methods.
+
 If you would prefer a slightly more verbose usage, replacing by-ref arguments by result objects, you can use the `Regex` class:
 
 ```php
@@ -129,13 +142,17 @@ Due to type safety requirements a few restrictions are in place.
 - `replace`, `replaceCallback` and `replaceCallbackArray` do not support an array `$subject`,
   only simple strings.
 - As of 2.0, the library always uses `PREG_UNMATCHED_AS_NULL` for matching, which offers [much
-  saner/more predictable results](#preg_unmatched_as_null). As of 3.0 the flag is also set for
-  `replaceCallback` and `replaceCallbackArray`.
+  saner/more predictable results](#preg_unmatched_as_null). 3.x will also use the flag for
+  `replaceCallback` and `replaceCallbackArray`. This is currently not doable due to the PHP
+  version requirement and to keep things working the same across all PHP versions. If you use
+  the library on a PHP 7.4+ project however we highly recommend already passing
+  `PREG_UNMATCHED_AS_NULL` to `replaceCallback` and `replaceCallbackArray`.
 
 #### PREG_UNMATCHED_AS_NULL
 
 As of 2.0, this library always uses PREG_UNMATCHED_AS_NULL for all `match*` and `isMatch*`
-functions. As of 3.0 it is also done for `replaceCallback` and `replaceCallbackArray`.
+functions (unfortunately `preg_replace_callback[_array]` only support this from PHP 7.4
+onwards so we cannot do the same there yet).
 
 This means your matches will always contain all matching groups, either as null if unmatched
 or as string if it matched.

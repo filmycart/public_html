@@ -35,13 +35,11 @@ class StaticPHPDriver implements MappingDriver
      * Map of all class names.
      *
      * @var array<int, string>
-     * @psalm-var list<class-string>
+     * @phpstan-var list<class-string>
      */
     private $classNames;
 
-    /**
-     * @param array<int, string>|string $paths
-     */
+    /** @param array<int, string>|string $paths */
     public function __construct($paths)
     {
         $this->addPaths((array) $paths);
@@ -58,7 +56,7 @@ class StaticPHPDriver implements MappingDriver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function loadMetadataForClass(string $className, ClassMetadata $metadata)
     {
@@ -125,7 +123,7 @@ class StaticPHPDriver implements MappingDriver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function isTransient(string $className)
     {

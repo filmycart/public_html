@@ -1,5 +1,7 @@
 <?php
+use App\Http\Controllers\GpayController;
 
+Route::get('/process-payment',[GpayController::class,'processPayment']);
 
 Route::group(['prefix' => 'v2/auth', 'middleware' => ['app_language']], function() {
     Route::post('login', 'App\Http\Controllers\Api\V2\AuthController@login');

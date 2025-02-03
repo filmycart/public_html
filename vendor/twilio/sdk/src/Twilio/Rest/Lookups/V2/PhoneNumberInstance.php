@@ -28,8 +28,10 @@ use Twilio\Version;
  * @property array $simSwap
  * @property array $callForwarding
  * @property array $liveActivity
- * @property array $enhancedLineType
  * @property array $lineTypeIntelligence
+ * @property array $identityMatch
+ * @property array $smsPumpingRisk
+ * @property array $disposablePhoneNumberRisk
  * @property string $url
  */
 class PhoneNumberInstance extends InstanceResource {
@@ -55,8 +57,10 @@ class PhoneNumberInstance extends InstanceResource {
             'simSwap' => Values::array_get($payload, 'sim_swap'),
             'callForwarding' => Values::array_get($payload, 'call_forwarding'),
             'liveActivity' => Values::array_get($payload, 'live_activity'),
-            'enhancedLineType' => Values::array_get($payload, 'enhanced_line_type'),
             'lineTypeIntelligence' => Values::array_get($payload, 'line_type_intelligence'),
+            'identityMatch' => Values::array_get($payload, 'identity_match'),
+            'smsPumpingRisk' => Values::array_get($payload, 'sms_pumping_risk'),
+            'disposablePhoneNumberRisk' => Values::array_get($payload, 'disposable_phone_number_risk'),
             'url' => Values::array_get($payload, 'url'),
         ];
 

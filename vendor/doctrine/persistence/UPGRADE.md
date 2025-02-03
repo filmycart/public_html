@@ -6,6 +6,26 @@ awareness about deprecated code.
 - Use of our low-overhead runtime deprecation API, details:
   https://github.com/doctrine/deprecations/
 
+# Upgrade to 3.4
+
+## Deprecated `StaticReflectionService`
+
+The class `Doctrine\Persistence\Mapping\StaticReflectionService` is deprecated
+without replacement.
+
+# Upgrade to 3.3
+
+## Added method `ObjectManager::isUninitializedObject()`
+
+Classes implementing `Doctrine\Persistence\ObjectManager` should implement the new
+method. This method will be added to the interface in 4.0.
+
+# Upgrade to 3.1
+
+## Deprecated `RuntimePublicReflectionProperty`
+
+Use `RuntimeReflectionProperty` instead.
+
 # Upgrade to 3.0
 
 ## Removed `OnClearEventArgs::clearsAllEntities()` and `OnClearEventArgs::getEntityClass()`
