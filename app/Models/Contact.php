@@ -10,6 +10,6 @@ class Contact extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'message', 'phone' // Add _token here if necessary
+        'name', 'email', 'phone', 'subject', 'message' // Add _token here if necessary
     ];
 }

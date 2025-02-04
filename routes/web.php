@@ -46,7 +46,7 @@ use App\Http\Controllers\Payment\PaykuController;
 use App\Http\Controllers\ProductQueryController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\ContactUsFormController;
+use App\Http\Controllers\ContactController;
 
 /*
   |--------------------------------------------------------------------------
@@ -105,8 +105,8 @@ Route::controller(HomeController::class)->group(function () {
     // Route::get('/new-page', 'new_page')->name('new_page');
 
     //Contact Page
-    Route::get('/contact', [ContactUsFormController::class, 'createForm']);
-    Route::post('/contact', [ContactUsFormController::class, 'ContactUsForm'])->name('contact.store');
+    Route::get('/contact', [ContactController::class, 'createForm']);
+    Route::post('/contact', [ContactController::class, 'ContactUsForm'])->name('contact.store');
 
     //Home Page
     Route::get('/', 'index')->name('home');
