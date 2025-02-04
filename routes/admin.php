@@ -43,6 +43,7 @@ use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UpdateController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\ContactController;
 
 /*
   |--------------------------------------------------------------------------
@@ -163,6 +164,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
         Route::get('/customers/login/{id}', 'login')->name('customers.login');
         Route::get('/customers/destroy/{id}', 'destroy')->name('customers.destroy');
         Route::post('/bulk-customer-delete', 'bulk_customer_delete')->name('bulk-customer-delete');
+    });
+
+    Route::resource('contacts', ContactController::class);
+    Route::controller(ContactController::class)->group(function () {
+        Route::get('/contacts/destroy/{id}', 'destroy')->name('contacts.destroy');
+        Route::post('/bulk-contacts-delete', 'bulk_contacts_delete')->name('bulk-contacts-delete');
     });
 
     // Newsletter
