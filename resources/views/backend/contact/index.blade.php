@@ -74,7 +74,7 @@
                                 <td>{{$contact->subject}}</td>
                                 <td>{{$contact->message}}</td>
                                 <td class="text-right">
-                                    <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('contact.destroy', $contact->id)}}" title="{{ translate('Delete') }}">
+                                    <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('contacts.destroy', $contact->id)}}" title="{{ translate('Delete') }}">
                                         <i class="las la-trash"></i>
                                     </a>
                                 </td>
@@ -159,7 +159,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{route('bulk-contact-delete')}}",
+                url: "{{route('bulk-contacts-delete')}}",
                 type: 'POST',
                 data: data,
                 cache: false,
