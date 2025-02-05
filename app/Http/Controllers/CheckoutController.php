@@ -277,27 +277,14 @@ class CheckoutController extends Controller
 
         $result = json_decode($response, true);
 
-        /*print"<pre>";
-        print_r($result);
-        exit;*/
-
         /*if ($result['status'] == true) {
             echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
             exit();
         }*/
 
-        //$result['data']['upi_intent']
-
-        /*print"<pre>";
-        print_r($result['data']['upi_intent']);
-        exit; */ 
-
         $upiLink = "";
         if((isset($result['data']['upi_intent'])) && (!empty($result['data']['upi_intent']))) {
             foreach($result['data']['upi_intent'] as $key=>$dataVal) {
-                /*print"<pre>";
-                print_r($key);
-                exit;*/    
                 $upiLink .= '<div><a href="'.$dataVal.'">'.$key.'</a></div>';
             }
         }
