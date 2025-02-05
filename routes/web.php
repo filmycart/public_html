@@ -251,6 +251,7 @@ Route::group(['middleware' => ['customer', 'verified', 'unbanned']], function() 
             Route::get('/', 'get_shipping_info')->name('checkout.shipping_info');
             Route::any('/delivery_info', 'store_shipping_info')->name('checkout.store_shipping_infostore');
             Route::post('/payment_select', 'store_delivery_info')->name('checkout.store_delivery_info');
+            Route::post('/generate_qr_code', 'generate_qr_code')->name('checkout.generate_qr_code');            
             Route::get('/order-confirmed', 'order_confirmed')->name('order_confirmed');
             Route::post('/payment', 'checkout')->name('payment.checkout');
             Route::post('/get_pick_up_points', 'get_pick_up_points')->name('shipping_info.get_pick_up_points');
