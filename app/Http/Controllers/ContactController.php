@@ -125,10 +125,10 @@
 	        return redirect()->route('contacts.index');
 	    }
 	    
-	    public function bulk_customer_delete(Request $request) {
+	    public function bulk_contacts_delete(Request $request) {
 	        if($request->id) {
-	            foreach ($request->id as $customer_id) {
-	                $this->destroy($customer_id);
+	            foreach ($request->id as $contact_id) {
+	                $this->destroy($contact_id);
 	            }
 	        }
 	        
