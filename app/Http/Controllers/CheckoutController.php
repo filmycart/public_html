@@ -252,7 +252,7 @@ class CheckoutController extends Controller
         $post_data->customer_email = 'kirubakaran.srm@gmail.com';
         $post_data->customer_mobile = '9944063620';
 
-        $post_data->redirect_url = "http://nachiyaartraders.in/checkout/payment_select"; // automatically ?client_txn_id=xxxxxx&txn_id=xxxxx will be added on redirect_url
+        $post_data->redirect_url = "https://dev.nachiyaartraders.in/checkout/payment_select"; // automatically ?client_txn_id=xxxxxx&txn_id=xxxxx will be added on redirect_url
         $post_data->udf1 = "extradata";
         $post_data->udf2 = "extradata";
         $post_data->udf3 = "extradata";
