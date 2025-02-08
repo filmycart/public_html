@@ -93,7 +93,6 @@ class CheckoutController extends Controller
     public function get_shipping_info(Request $request)
     {
         $carts = Cart::where('user_id', Auth::user()->id)->get();
-//        if (Session::has('cart') && count(Session::get('cart')) > 0) {
         if ($carts && count($carts) > 0) {
             $categories = Category::all();
             return view('frontend.shipping_info', compact('categories', 'carts'));
@@ -117,7 +116,6 @@ class CheckoutController extends Controller
         }
 
         return view('frontend.delivery_info', compact('carts'));
-        // return view('frontend.payment_select', compact('total'));
     }
 
     public function store_delivery_info(Request $request)
@@ -177,49 +175,6 @@ class CheckoutController extends Controller
 
             }
             $total = $subtotal + $tax + $shipping;
-
-            //$key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-            $key = "acdc11de-f848-4547-902a-e968dbb564e3";
-            $post_data = new \stdClass();
-            $post_data->key = $key;
-            $post_data->client_txn_id = (string) rand(100000, 999999); // you can use this field to store order id;
-      
-            $post_data->amount = "1";
-            $post_data->p_info = "product_name";
-            $post_data->customer_name = 'kirubakaran';
-            $post_data->customer_email = 'kirubakaran.srm@gmail.com';
-            $post_data->customer_mobile = '9944063620';
-
-            $post_data->redirect_url = "http://nachiyaartraders.in/checkout/payment_select"; // automatically ?client_txn_id=xxxxxx&txn_id=xxxxx will be added on redirect_url
-            $post_data->udf1 = "extradata";
-            $post_data->udf2 = "extradata";
-            $post_data->udf3 = "extradata";
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://merchant.upigateway.com/api/create_order',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => json_encode($post_data),
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-            ));
-            $response = curl_exec($curl);
-
-            curl_close($curl);
-
-            $result = json_decode($response, true);
-
-            /*if ($result['status'] == true) {
-                echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
-                exit();
-            }*/
 
             return view('frontend.payment_select', compact('carts', 'shipping_info', 'total'));
 
