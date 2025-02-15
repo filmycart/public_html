@@ -655,7 +655,7 @@
         })
     </script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        /*$(document).ready(function() {
 
             var data = new FormData();
             data.append("txnAmount", $('#txnAmount').val());
@@ -677,6 +677,6 @@
                     $("#qr_code").html(resp);
                 }
             });
-        });
+        });*/
     </script>
 @endsection
