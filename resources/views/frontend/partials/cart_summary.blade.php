@@ -70,6 +70,76 @@
             </thead>
             <tbody>
                 @php
+                    $generateTokenResponseArray = array();
+                    $generateTokenUrl = $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_GENERATE_TOKEN_URL'];
+
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                      CURLOPT_URL => $generateTokenUrl,
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => '',
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 0,
+                      CURLOPT_FOLLOWLOCATION => true,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => 'POST',
+                      CURLOPT_POSTFIELDS =>'{
+                        "email": "'.$_ENV['SHIP_ROCKET_USER_NAME'].'",
+                        "password": "'.$_ENV['SHIP_ROCKET_PASSWORD'].'"
+                      }',
+                      CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json'
+                      ),
+                    ));
+
+                    $generateTokenResponse = curl_exec($curl);
+                    $generateTokenResponseArray = json_decode($generateTokenResponse);
+                    curl_close($curl);
+                    
+                    $shippingResponseArray = array();
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                      CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_SERVICABILITY_URL'],
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => '',
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 0,
+                      CURLOPT_FOLLOWLOCATION => true,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => 'GET',
+                      CURLOPT_POSTFIELDS =>'{
+                        "pickup_postcode":"560076",
+                        "delivery_postcode":"'.$shipping_info->postal_code.'",
+                        "weight":"0.5",
+                        "cod":true
+                    }',
+                      CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        'Authorization: Bearer '.$generateTokenResponseArray->token
+                      ),
+                    ));
+
+                    $response = curl_exec($curl);
+
+                    curl_close($curl);
+                    $shippingResponseArray = json_decode($response);
+
+                    $codChargesArray = array();
+                    if((isset($shippingResponseArray->data->available_courier_companies)) && (!empty($shippingResponseArray->data->available_courier_companies))) {
+                        foreach ($shippingResponseArray->data->available_courier_companies as $key => $shipValue) {
+                            $codChargesArray[] = $shipValue->cod_charges;
+                        }    
+                    }
+
+                    rsort($codChargesArray);
+
+                    $finalShippingCharge = 0;
+                    if((isset($codChargesArray['0'])) && (!empty($codChargesArray['0']))) {
+                        $finalShippingCharge = $codChargesArray['0'];
+                    }
+
                     $subtotal = 0;
                     $tax = 0;
                     $shipping = 0;
@@ -82,8 +152,13 @@
                         $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
                         $tax += cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
                         $product_shipping_cost = $cartItem['shipping_cost'];
-                        
-                        $shipping += $product_shipping_cost;
+
+                        $shipping += $product_shipping_cost;    
+                        /*if($finalShippingCharge > $product_shipping_cost) {
+                            $shipping += $finalShippingCharge;
+                        } else if($finalShippingCharge <= $product_shipping_cost) {
+                            $shipping += $product_shipping_cost;
+                        }*/
                         
                         $product_name_with_choice = $product->getTranslation('name');
                         if ($cartItem['variant'] != null) {
