@@ -9,6 +9,7 @@ use App\Models\BusinessSetting;
 use Auth;
 use Hash;
 use App\Notifications\EmailVerificationNotification;
+use Illuminate\Support\Facades\DB;
 
 class ShipRocketController extends Controller
 {
@@ -22,21 +23,21 @@ class ShipRocketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function generateToken()
-    {
+    public static function generateToken() {
+
         $generateTokenUrl = $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_GENERATE_TOKEN_URL'];
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $generateTokenUrl,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_URL => $generateTokenUrl,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
           CURLOPT_POSTFIELDS =>'{
             "email": "'.$_ENV['SHIP_ROCKET_USER_NAME'].'",
             "password": "'.$_ENV['SHIP_ROCKET_PASSWORD'].'"
@@ -49,8 +50,106 @@ class ShipRocketController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        echo $response;
-        exit;
+
+        return json_decode($response);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function serviceability($ship_info, $tokenResp) {
+
+        $url = $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_SERVICABILITY_URL'];
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'GET',
+          CURLOPT_POSTFIELDS =>'{
+            "pickup_postcode":"560076",
+            "delivery_postcode":"'.$ship_info->postal_code.'",
+            "weight":"0.5",
+            "cod":true
+          }',
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Authorization: Bearer '.$tokenResp->token
+          ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        return json_decode($response);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public static function createOrder($requestJson, $order_id) {
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_EXT_ORDERS_CREATE_URL'],
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => $requestJson,
+          CURLOPT_HTTPHEADER => array (
+              'Content-Type: application/json',
+              'Authorization: Bearer '.$_ENV['SHIP_ROCKET_BEARER_TOKEN']
+          ),
+      ));
+
+      $response = curl_exec($curl);
+
+      curl_close($curl);
+
+      $trackingCurl = curl_init();
+
+      curl_setopt_array($trackingCurl, array(
+        CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_EXT_COURIER_TRACKING_URL'].'?order_id='.$order_id.'&channel_id='.$_ENV['SHIP_ROCKET_CHANNEL_ID'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+          'Content-Type: application/json',
+          'Authorization: Bearer '.$_ENV['SHIP_ROCKET_BEARER_TOKEN']
+        ),
+      ));
+
+      $trackingResponse = curl_exec($trackingCurl);
+
+      curl_close($trackingCurl);
+      
+      //insert tracking info
+      $trackingData = array(
+          "order_id"=>$order_id,
+          "tracking_response"=>$trackingResponse
+      );
+
+      $trackingInsertId = DB::table('order_tracking')->insert($trackingData);        
     }
 
     /**

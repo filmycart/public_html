@@ -13,6 +13,7 @@ use App\Models\CouponUsage;
 use App\Models\Address;
 use App\Models\CombinedOrder;
 use App\Models\Product;
+use App\Models\ProductStock;
 use App\Utility\PayhereUtility;
 use App\Utility\NotificationUtility;
 use App\Http\Controllers\ShipRocketController;
@@ -119,6 +120,8 @@ class CheckoutController extends Controller
 
     public function store_delivery_info(Request $request)
     {
+        $generateTokenResponseArray = $shippingResponseArray = array();       
+        
         $carts = Cart::where('user_id', Auth::user()->id)
                 ->get();
 
@@ -133,64 +136,8 @@ class CheckoutController extends Controller
         $shipping = 0;
         $subtotal = 0;
 
-        /*$test = ShipRocketController::generateToken();
-        dd($test);*/
-
-        $generateTokenResponseArray = array();
-        $generateTokenUrl = $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_GENERATE_TOKEN_URL'];
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $generateTokenUrl,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS =>'{
-            "email": "'.$_ENV['SHIP_ROCKET_USER_NAME'].'",
-            "password": "'.$_ENV['SHIP_ROCKET_PASSWORD'].'"
-          }',
-          CURLOPT_HTTPHEADER => array(
-            'Content-Type: application/json'
-          ),
-        ));
-
-        $generateTokenResponse = curl_exec($curl);
-        $generateTokenResponseArray = json_decode($generateTokenResponse);
-        curl_close($curl);
-        
-        $shippingResponseArray = array();
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_SERVICABILITY_URL'],
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'GET',
-          CURLOPT_POSTFIELDS =>'{
-            "pickup_postcode":"560076",
-            "delivery_postcode":"'.$shipping_info->postal_code.'",
-            "weight":"0.5",
-            "cod":true
-        }',
-          CURLOPT_HTTPHEADER => array(
-            'Content-Type: application/json',
-            'Authorization: Bearer '.$generateTokenResponseArray->token
-          ),
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        $shippingResponseArray = json_decode($response);
+        $generateTokenResponseArray = ShipRocketController::generateToken();        
+        $shippingResponseArray = ShipRocketController::serviceability($shipping_info, $generateTokenResponseArray);
 
         $codChargesArray = array();
         if((isset($shippingResponseArray->data->available_courier_companies)) && (!empty($shippingResponseArray->data->available_courier_companies))) {
@@ -263,21 +210,12 @@ class CheckoutController extends Controller
     }
 
     public function generate_qr_code(Request $request) {
-
-        //$key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-        
+    
         $key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-        // $key = "acdc11de-f848-4547-902a-e968dbb564e3";
 
         $post_data = new \stdClass();
         $post_data->key = $key;
         $post_data->client_txn_id = (string) rand(100000, 999999); // you can use this field to store order id;
-  
-        /*$post_data->amount = $_POST['txnAmount'];
-        $post_data->p_info = "product_name";
-        $post_data->customer_name = $_POST['customerName'];
-        $post_data->customer_email = $_POST['customerEmail'];
-        $post_data->customer_mobile = $_POST['customerMobile'];*/
 
         $post_data->amount = '1';
         $post_data->p_info = "product_name";
@@ -309,11 +247,6 @@ class CheckoutController extends Controller
         curl_close($curl);
 
         $result = json_decode($response, true);
-
-        /*if ($result['status'] == true) {
-            echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
-            exit();
-        }*/
 
         $upiLink = "";
         if((isset($result['data']['upi_intent'])) && (!empty($result['data']['upi_intent']))) {
@@ -460,6 +393,39 @@ class CheckoutController extends Controller
 
     public function order_confirmed()
     {
+        $carts = Cart::where('user_id', Auth::user()->id)
+                ->get();
+
+        $wproduct = $wproductStock = array();
+        $totalWeight = $prodWeight = $prodWeightQuantity = 0;
+        if ($carts && count($carts) > 0) {
+            foreach ($carts as $key => $cartItem) {
+                $wproduct[$key] = Product::find($cartItem['product_id']);
+                $wproductStock[$cartItem['product_id']] = ProductStock::where('product_id', '=', $cartItem['product_id'])->get()->toArray();
+            }
+        }
+
+        $productStockArray = array();  
+        $productWiseQuantity = 0;
+        if ($carts && count($carts) > 0) {
+            foreach ($carts as $key => $cartItem) {
+                if($wproductStock[$cartItem['product_id']]) {
+                    foreach ($wproductStock[$cartItem['product_id']] as $key2 => $wproductStockVal) {
+                        $productStockArray[$cartItem['id']]['actual_weight'] = $wproductStockVal['actual_weight'];
+                        $productStockArray[$cartItem['id']]['quantity'] = $cartItem['quantity'];
+                        $productStockArray[$cartItem['id']]['productwise_weight'] = $wproductStockVal['actual_weight'] * $cartItem['quantity'];
+                    }
+                }
+            }
+        }
+
+        $overallTotalWeight = 0;
+        if((!empty($productStockArray))) {
+            foreach ($productStockArray as $key => $productStockVal) {
+                $overallTotalWeight += $productStockVal['productwise_weight'];
+            }
+        }
+
         $combined_order = CombinedOrder::findOrFail(Session::get('combined_order_id'));
 
         if($_ENV['SHIP_ROCKET_AUTOMATE_SHIPPING'] == 1) {
@@ -552,64 +518,12 @@ class CheckoutController extends Controller
                 $ordersArray[$key]['discount'] = $order->discount?$order->discount:"";
                 $ordersArray[$key]['tax'] = $order->tax?$order->tax:"";
                 $ordersArray[$key]['hsn'] = 441122;
-                $order_weight += $order->weight;
+                $order_weight += $order->weight*$order->quantity;
             }
 
             if(!empty($ordersArray)) {
                 $orderItemsJson = json_encode($ordersArray);
             }
-
-            /*$test ='{
-              "order_id": "111",
-              "order_date": "2025-02-05 11:11",
-              "pickup_location": "Jammu",
-              "channel_id": "6177358",
-              "comment": "Reseller: M/s Goku",
-              "billing_customer_name": "Naruto",
-              "billing_last_name": "Uzumaki",
-              "billing_address": "House 221B, Leaf Village",
-              "billing_address_2": "Near Hokage House",
-              "billing_city": "New Delhi",
-              "billing_pincode": "110002",
-              "billing_state": "Delhi",
-              "billing_country": "India",
-              "billing_email": "naruto@uzumaki.com",
-              "billing_phone": "9876543210",
-              "shipping_is_billing": true,
-              "shipping_customer_name": "",
-              "shipping_last_name": "",
-              "shipping_address": "",
-              "shipping_address_2": "",
-              "shipping_city": "",
-              "shipping_pincode": "",
-              "shipping_country": "",
-              "shipping_state": "",
-              "shipping_email": "",
-              "shipping_phone": "",
-              "order_items": [
-                {
-                  "name": "Kunai",
-                  "sku": "chakra123",
-                  "units": 10,
-                  "selling_price": "900",
-                  "discount": "",
-                  "tax": "",
-                  "hsn": 441122
-                }
-              ],
-              "payment_method": "Prepaid",
-              "shipping_charges": 0,
-              "giftwrap_charges": 0,
-              "transaction_charges": 0,
-              "total_discount": 0,
-              "sub_total": 9000,
-              "length": 10,
-              "breadth": 15,
-              "height": 20,
-              "weight": 2.5
-            }';
-            var_dump($test);
-            exit;*/
 
             $address_length = 0;
             $address1 = $address2 = "";
@@ -661,57 +575,10 @@ class CheckoutController extends Controller
                 "length": 10,
                 "breadth": 15,
                 "height": 20,
-                "weight": '.$order_weight.'
+                "weight": '.$overallTotalWeight.'
             }';
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_EXT_ORDERS_CREATE_URL'],
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $requestJson,
-                CURLOPT_HTTPHEADER => array (
-                    'Content-Type: application/json',
-                    'Authorization: Bearer '.$_ENV['SHIP_ROCKET_BEARER_TOKEN']
-                ),
-            ));
-
-            $response = curl_exec($curl);
-
-            curl_close($curl);
-
-            $trackingCurl = curl_init();
-
-            curl_setopt_array($trackingCurl, array(
-              CURLOPT_URL => $_ENV['SHIP_ROCKET_BASE_API_URL'].$_ENV['SHIP_ROCKET_EXT_COURIER_TRACKING_URL'].'?order_id='.$order_id.'&channel_id='.$ship_channel_id,
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => '',
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 0,
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => 'GET',
-              CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Bearer '.$_ENV['SHIP_ROCKET_BEARER_TOKEN']
-              ),
-            ));
-
-            $trackingResponse = curl_exec($trackingCurl);
-
-            curl_close($trackingCurl);
             
-            //insert tracking info
-            $trackingData = array(
-                "order_id"=>$order_id,
-                "tracking_response"=>$trackingResponse
-            );
-
-            $trackingInsertId=DB::table('order_tracking')->insert($trackingData);
+            ShipRocketController::createOrder($requestJson, $order_id);
         }
 
         Cart::where('user_id', $combined_order->user_id)->delete();

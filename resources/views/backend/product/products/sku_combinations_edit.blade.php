@@ -15,12 +15,14 @@
                 {{translate('Quantity')}}
             </td>
             <td class="text-center" data-breakpoints="lg">
+                {{translate('Actual Weight')}}
+            </td>
+            <td class="text-center" data-breakpoints="lg">
                 {{translate('Photo')}}
             </td>
         </tr>
     </thead>
     <tbody>
-
         @foreach ($combinations as $key => $combination)
             @php
                 $variation_available = false;
@@ -89,6 +91,16 @@
                             }
                             else{
                                 echo '10';
+                            }
+                           @endphp" min="0" step="1" class="form-control" required>
+                </td>
+                <td>
+                    <input type="text" lang="en" name="actual_weight_{{ $str }}" value="@php
+                            if($stock != null){
+                                echo $stock->actual_weight;
+                            }
+                            else{
+                                echo '0.250';
                             }
                            @endphp" min="0" step="1" class="form-control" required>
                 </td>
