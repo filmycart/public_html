@@ -1,5 +1,4 @@
 @extends('frontend.layouts.app')
-
 @section('content')
     <section class="mb-4 pt-5">
         <div class="container">
