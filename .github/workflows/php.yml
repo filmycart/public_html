@@ -1,22 +1,14 @@
-name: PHP Composer
-
+name: Dev
 on:
   push:
-    branches: [ "dev_kiruba" ]
-  pull_request:
-    branches: [ "main" ]
-
+    branches: [ "dev" ]
 permissions:
   contents: read
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
