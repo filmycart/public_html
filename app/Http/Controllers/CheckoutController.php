@@ -7,19 +7,22 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\Address;
 use App\Models\CombinedOrder;
 use App\Models\Product;
+use App\Models\ProductStock;
 use App\Utility\PayhereUtility;
 use App\Utility\NotificationUtility;
+use App\Http\Controllers\ShipRocketController;
 use Session;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
-
     public function __construct()
     {
         //
@@ -41,7 +44,6 @@ class CheckoutController extends Controller
             }
         }
         // Minumum order amount check end
-        
         if ($request->payment_option != null) {
             (new OrderController)->store($request);
 
@@ -51,13 +53,11 @@ class CheckoutController extends Controller
             $request->session()->put('payment_data', $data);
 
             if ($request->session()->get('combined_order_id') != null) {
-
                 // If block for Online payment, wallet and cash on delivery. Else block for Offline payment
                 $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
                 if (class_exists($decorator)) {
                     return (new $decorator)->pay($request);
-                }
-                else {
+                } else {
                     $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
                     foreach ($combined_order->orders as $order) {
                         $order->manual_payment = 1;
@@ -93,7 +93,6 @@ class CheckoutController extends Controller
     public function get_shipping_info(Request $request)
     {
         $carts = Cart::where('user_id', Auth::user()->id)->get();
-//        if (Session::has('cart') && count(Session::get('cart')) > 0) {
         if ($carts && count($carts) > 0) {
             $categories = Category::all();
             return view('frontend.shipping_info', compact('categories', 'carts'));
@@ -117,11 +116,12 @@ class CheckoutController extends Controller
         }
 
         return view('frontend.delivery_info', compact('carts'));
-        // return view('frontend.payment_select', compact('total'));
     }
 
     public function store_delivery_info(Request $request)
     {
+        $generateTokenResponseArray = $shippingResponseArray = array();       
+        
         $carts = Cart::where('user_id', Auth::user()->id)
                 ->get();
 
@@ -135,6 +135,23 @@ class CheckoutController extends Controller
         $tax = 0;
         $shipping = 0;
         $subtotal = 0;
+
+        $generateTokenResponseArray = ShipRocketController::generateToken();        
+        $shippingResponseArray = ShipRocketController::serviceability($shipping_info, $generateTokenResponseArray);
+
+        $codChargesArray = array();
+        if((isset($shippingResponseArray->data->available_courier_companies)) && (!empty($shippingResponseArray->data->available_courier_companies))) {
+            foreach ($shippingResponseArray->data->available_courier_companies as $key => $shipValue) {
+                $codChargesArray[] = $shipValue->cod_charges;
+            }    
+        }
+
+        rsort($codChargesArray);
+
+        $finalShippingCharge = 0;
+        if((isset($codChargesArray['0'])) && (!empty($codChargesArray['0']))) {
+            $finalShippingCharge = $codChargesArray['0'];
+        }
 
         if ($carts && count($carts) > 0) {
             foreach ($carts as $key => $cartItem) {
@@ -171,55 +188,18 @@ class CheckoutController extends Controller
                         $cartItem['shipping_cost'] = 0;
                     }
                 }
+                
+                //$shipping += $cartItem['shipping_cost'];
+                if($finalShippingCharge > $cartItem['shipping_cost']) {
+                    $shipping += $finalShippingCharge;
+                } else if($finalShippingCharge <= $cartItem['shipping_cost']) {
+                    $shipping += $cartItem['shipping_cost'];
+                }
 
-                $shipping += $cartItem['shipping_cost'];
                 $cartItem->save();
 
             }
             $total = $subtotal + $tax + $shipping;
-
-            //$key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-            $key = "acdc11de-f848-4547-902a-e968dbb564e3";
-            $post_data = new \stdClass();
-            $post_data->key = $key;
-            $post_data->client_txn_id = (string) rand(100000, 999999); // you can use this field to store order id;
-      
-            $post_data->amount = "1";
-            $post_data->p_info = "product_name";
-            $post_data->customer_name = 'kirubakaran';
-            $post_data->customer_email = 'kirubakaran.srm@gmail.com';
-            $post_data->customer_mobile = '9944063620';
-
-            $post_data->redirect_url = "http://nachiyaartraders.in/checkout/payment_select"; // automatically ?client_txn_id=xxxxxx&txn_id=xxxxx will be added on redirect_url
-            $post_data->udf1 = "extradata";
-            $post_data->udf2 = "extradata";
-            $post_data->udf3 = "extradata";
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://merchant.upigateway.com/api/create_order',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => json_encode($post_data),
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-            ));
-            $response = curl_exec($curl);
-
-            curl_close($curl);
-
-            $result = json_decode($response, true);
-
-            /*if ($result['status'] == true) {
-                echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
-                exit();
-            }*/
 
             return view('frontend.payment_select', compact('carts', 'shipping_info', 'total'));
 
@@ -230,21 +210,12 @@ class CheckoutController extends Controller
     }
 
     public function generate_qr_code(Request $request) {
-
-        //$key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-        
+    
         $key = "ec63454c-2f4a-42ae-840d-8bd8bf6c12e0";  // Your Api Token https://merchant.upigateway.com/user/api_credentials
-        // $key = "acdc11de-f848-4547-902a-e968dbb564e3";
 
         $post_data = new \stdClass();
         $post_data->key = $key;
         $post_data->client_txn_id = (string) rand(100000, 999999); // you can use this field to store order id;
-  
-        /*$post_data->amount = $_POST['txnAmount'];
-        $post_data->p_info = "product_name";
-        $post_data->customer_name = $_POST['customerName'];
-        $post_data->customer_email = $_POST['customerEmail'];
-        $post_data->customer_mobile = $_POST['customerMobile'];*/
 
         $post_data->amount = '1';
         $post_data->p_info = "product_name";
@@ -276,11 +247,6 @@ class CheckoutController extends Controller
         curl_close($curl);
 
         $result = json_decode($response, true);
-
-        /*if ($result['status'] == true) {
-            echo '<script>location.href="' . $result['data']['payment_url'] . '"</script>';
-            exit();
-        }*/
 
         $upiLink = "";
         if((isset($result['data']['upi_intent'])) && (!empty($result['data']['upi_intent']))) {
@@ -427,10 +393,195 @@ class CheckoutController extends Controller
 
     public function order_confirmed()
     {
+        $carts = Cart::where('user_id', Auth::user()->id)
+                ->get();
+
+        $wproduct = $wproductStock = array();
+        $totalWeight = $prodWeight = $prodWeightQuantity = 0;
+        if ($carts && count($carts) > 0) {
+            foreach ($carts as $key => $cartItem) {
+                $wproduct[$key] = Product::find($cartItem['product_id']);
+                $wproductStock[$cartItem['product_id']] = ProductStock::where('product_id', '=', $cartItem['product_id'])->get()->toArray();
+            }
+        }
+
+        $productStockArray = array();  
+        $productWiseQuantity = 0;
+        if ($carts && count($carts) > 0) {
+            foreach ($carts as $key => $cartItem) {
+                if($wproductStock[$cartItem['product_id']]) {
+                    foreach ($wproductStock[$cartItem['product_id']] as $key2 => $wproductStockVal) {
+                        $productStockArray[$cartItem['id']]['actual_weight'] = $wproductStockVal['actual_weight'];
+                        $productStockArray[$cartItem['id']]['quantity'] = $cartItem['quantity'];
+                        $productStockArray[$cartItem['id']]['productwise_weight'] = $wproductStockVal['actual_weight'] * $cartItem['quantity'];
+                    }
+                }
+            }
+        }
+
+        $overallTotalWeight = 0;
+        if((!empty($productStockArray))) {
+            foreach ($productStockArray as $key => $productStockVal) {
+                $overallTotalWeight += $productStockVal['productwise_weight'];
+            }
+        }
+
         $combined_order = CombinedOrder::findOrFail(Session::get('combined_order_id'));
 
-        Cart::where('user_id', $combined_order->user_id)
-                ->delete();
+        if($_ENV['SHIP_ROCKET_AUTOMATE_SHIPPING'] == 1) {
+            $orderAttrib = array();
+            $order_id = $user_id = $grand_total = $created_at = $updated_at = "";
+            $ship_name = $ship_email = $ship_address = $ship_country = "";
+            $ship_state = $ship_city = $ship_postal_code = $ship_phone = "";
+
+            $ship_channel_id = $_ENV['SHIP_ROCKET_CHANNEL_ID'];
+            if(!empty($combined_order)) {
+                $orderAttrib = $combined_order->getAttributes();
+
+                if((isset($orderAttrib['user_id'])) && (!empty($orderAttrib['user_id']))) {
+                    $user_id = $orderAttrib['user_id'];
+                }
+
+                if((isset($orderAttrib['id'])) && (!empty($orderAttrib['id']))) {
+                    $order_id = $orderAttrib['id'];
+                }
+
+                if((isset($orderAttrib['shipping_address'])) && (!empty($orderAttrib['shipping_address']))) {
+                    $shipping_address = json_decode($orderAttrib['shipping_address']);
+                }
+
+                if((isset($orderAttrib['grand_total'])) && (!empty($orderAttrib['grand_total']))) {
+                    $grand_total = $orderAttrib['grand_total'];
+                }
+
+                if((isset($orderAttrib['created_at'])) && (!empty($orderAttrib['created_at']))) {
+                    $created_at = $orderAttrib['created_at'];
+                }
+
+                if((isset($orderAttrib['updated_at'])) && (!empty($orderAttrib['updated_at']))) {
+                    $updated_at = $orderAttrib['updated_at'];
+                }
+
+                if($shipping_address->name) {
+                     $ship_name = $shipping_address->name;
+                }
+
+                if($shipping_address->email) {
+                     $ship_email = $shipping_address->email;
+                }
+
+                if($shipping_address->address) {
+                     $ship_address = $shipping_address->address;
+                }
+
+                if($shipping_address->country) {
+                     $ship_country = $shipping_address->country;
+                }
+
+                if($shipping_address->state) {
+                     $ship_state = $shipping_address->state;
+                }
+
+                if($shipping_address->city) {
+                     $ship_city = $shipping_address->city;
+                }
+
+                if($shipping_address->postal_code) {
+                     $ship_postal_code = $shipping_address->postal_code;
+                }
+
+                if($shipping_address->phone) {
+                     $ship_phone = $shipping_address->phone;
+                }      
+            }
+
+            $curl = curl_init();
+
+            $order_detail = DB::table('orders')
+                            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+                            ->join('products', 'order_details.product_id', '=', 'products.id')
+                            ->where('orders.combined_order_id', $order_id)
+                            ->where('orders.user_id', $user_id)
+                            ->select('*')
+                            ->get();
+
+            $ordersArray = array();
+            $order_unit_price = $order_weight = 0;
+            $orderItemsJson = "";
+            foreach($order_detail as $key=>$order) {
+                $ordersArray[$key]['name'] = $order->name;
+                $randNum = rand(100000, 999999);
+                $skuCode = strtolower(str_replace(" ","-",$order->name)."-".$order->variation."-".$randNum);
+                $ordersArray[$key]['sku'] = $skuCode;
+                $ordersArray[$key]['units'] = $order->quantity;
+                $ordersArray[$key]['selling_price'] = $order->price?$order->price:"";
+                $ordersArray[$key]['discount'] = $order->discount?$order->discount:"";
+                $ordersArray[$key]['tax'] = $order->tax?$order->tax:"";
+                $ordersArray[$key]['hsn'] = 441122;
+                $order_weight += $order->weight*$order->quantity;
+            }
+
+            if(!empty($ordersArray)) {
+                $orderItemsJson = json_encode($ordersArray);
+            }
+
+            $address_length = 0;
+            $address1 = $address2 = "";
+            $address_length = strlen($ship_address);
+
+            if($address_length > 80) {
+                $address_equal_length = $address_length/2;
+                $address1 = substr($ship_address,0,$address_equal_length);
+                $address2 = substr($ship_address,$address_equal_length,$address_length); 
+            }
+
+            $country_code = "+91";
+            $ship_phone = preg_replace("/^\+?{$country_code}/", '',$ship_phone);
+
+            $requestJson = '{
+                "order_id": "'.$order_id.'",
+                "order_date": "'.$created_at.'",
+                "pickup_location": "'.$_ENV['SHIP_ROCKET_PICKUP_LOCATION'].'",
+                "channel_id": "'.$_ENV['SHIP_ROCKET_CHANNEL_ID'].'",
+                "comment": " ",
+                "billing_customer_name": "'.$ship_name.'",
+                "billing_last_name": "'.$ship_name.'",
+                "billing_address": "'.$address1.'",
+                "billing_address_2": "",
+                "billing_city": "'.$ship_city.'",
+                "billing_pincode": "'.$ship_postal_code.'",
+                "billing_state": "'.$ship_state.'",
+                "billing_country": "'.$ship_country.'",
+                "billing_email": "'.$ship_email.'",
+                "billing_phone": "'.$ship_phone.'",
+                "shipping_is_billing": true,
+                "shipping_customer_name": "",
+                "shipping_last_name": "",
+                "shipping_address": "",
+                "shipping_address_2": "",
+                "shipping_city": "",
+                "shipping_pincode": "",
+                "shipping_country": "",
+                "shipping_state": "",
+                "shipping_email": "",
+                "shipping_phone": "",
+                "order_items": '.$orderItemsJson.',   
+                "payment_method": "Prepaid",
+                "shipping_charges": 0,
+                "giftwrap_charges": 0,
+                "transaction_charges": 0,
+                "total_discount": 0,
+                "sub_total": '.$grand_total.',
+                "length": 10,
+                "breadth": 15,
+                "height": 20,
+                "weight": '.$overallTotalWeight.'
+            }';
+            
+            ShipRocketController::createOrder($requestJson, $order_id);
+        }
+
+        Cart::where('user_id', $combined_order->user_id)->delete();
 
         //Session::forget('club_point');
         //Session::forget('combined_order_id');

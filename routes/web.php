@@ -47,6 +47,7 @@ use App\Http\Controllers\ProductQueryController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ShipRocketController;
 
 /*
   |--------------------------------------------------------------------------
@@ -58,6 +59,11 @@ use App\Http\Controllers\ContactController;
   | contains the "web" middleware group. Now create something great!
   |
  */
+
+Route::controller(ShipRocketController::class)->group(function () {
+    Route::get('/generate-token', 'generateToken');
+});
+
 Route::controller(DemoController::class)->group(function () {
     Route::get('/demo/cron_1', 'cron_1');
     Route::get('/demo/cron_2', 'cron_2');

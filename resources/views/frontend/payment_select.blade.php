@@ -1,5 +1,4 @@
 @extends('frontend.layouts.app')
-
 @section('content')
     <section class="mb-4 pt-5">
         <div class="container">
@@ -655,7 +654,7 @@
         })
     </script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        /*$(document).ready(function() {
 
             var data = new FormData();
             data.append("txnAmount", $('#txnAmount').val());
@@ -677,6 +676,6 @@
                     $("#qr_code").html(resp);
                 }
             });
-        });
+        });*/
     </script>
 @endsection
