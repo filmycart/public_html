@@ -84,5 +84,3 @@ jobs:
                   git fetch
                   git checkout qa
                   git pull origin qa
-                working-directory: /home/kz8vi9h6efqu/public_html/qa
-     
