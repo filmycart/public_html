@@ -75,18 +75,27 @@ jobs:
             - name: Checkout qa
               uses: actions/checkout@v4
               with:
-                repository: 'filmycart/nachiyartraders'
-              #  path: ['/home/kz8vi9h6efqu/public_html/qa']
-                token: ${{ secrets.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 }}
-              # with:
-              #     ref: qa
-            - name: Copy files
-              run: |
-                  git config --global user.name "filmycart"
-                  git config --global user.email "filmycartin@gmail.com"
-                  git fetch
-                  git checkout qa
-                  git pull origin qa
+                  ref: qa
+            # - name: Copy files
+            #   run: |
+            #       git config --global user.name "filmycart"
+            #       git config --global user.email "filmycartin@gmail.com"
+            #       git fetch
+            #       git checkout qa
+            #       git pull origin qa
+
+             # Copy the repository to the directory on the server/VPS used for the application
+              - name: Copy dist to VPS
+                uses: filmycart/nachiyartraders@qa
+                with:
+                #  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.filmycart }}
+                #  port: ${{ secrets.SSH_PORT }}
+                  key: ${{ secrets.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 }}
+                  # Selecting all folders except "node_modules"
+                  source: "."
+                  # The path is based on the directory where the user logged into the server starts
+                  target: "/home/kz8vi9h6efqu/public_html/qa"      
 
 
 
