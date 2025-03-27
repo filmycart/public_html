@@ -80,7 +80,6 @@ jobs:
               run: |
                   git config --global user.name "filmycart"
                   git config --global user.email "filmycartin@gmail.com"
-                  rsync -r --exclude=.git
                   git fetch
                   git checkout qa
                   git pull origin qa
