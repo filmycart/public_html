@@ -6,8 +6,6 @@ on:
 permissions:
   contents: write
 jobs:
-  script:
-    - git pull origin qa
   build:
     runs-on: ubuntu-latest
     steps:
