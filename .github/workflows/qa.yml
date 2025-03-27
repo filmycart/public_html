@@ -2,7 +2,7 @@ name: QA
 on:
   push:
     branches: [ "qa" ]
-    paths: '/home/kz8vi9h6efqu/public_html/qa/*'    
+    paths: '/home/kz8vi9h6efqu/public_html/qa/'    
 permissions:
   contents: read
 jobs:
