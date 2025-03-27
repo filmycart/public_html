@@ -13,7 +13,7 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Directory Permission
-        run: chmod -R 777 /home/kz8vi9h6efqu/public_html/qa/
+        run: chmod -R 777
   # copy:
   #   runs-on: ubuntu-latest
   #   steps:
