@@ -5,11 +5,14 @@ on:
     #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
 permissions:
   contents: write
-jobs:
+deploy1:
+  stage: deploy
   script:
     - echo "Start deploy"
+    - echo "Next step"
     - git pull
-    - echo "finish"
+    - echo "finish"  
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
