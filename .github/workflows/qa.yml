@@ -80,6 +80,7 @@ jobs:
               run: |
                   git config --global user.name "filmycart"
                   git config --global user.email "filmycartin@gmail.com"
+                  git clone https://github.com/filmycart/nachiyartraders
                   git fetch
                   git checkout qa
                   git pull origin qa
