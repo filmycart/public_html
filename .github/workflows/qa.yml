@@ -7,7 +7,6 @@ permissions:
   contents: read
 jobs:
   script:
-    - git fetch origin qa
     - git pull qa
   # build:
   #   runs-on: ubuntu-latest
