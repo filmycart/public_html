@@ -75,7 +75,11 @@ jobs:
             - name: Checkout qa
               uses: actions/checkout@v4
               with:
-                  ref: qa
+                repository: 'filmycart/nachiyartraders'
+                path: ['/home/kz8vi9h6efqu/public_html/qa']
+                token: ${{ secrets.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 }}
+              # with:
+              #     ref: qa
             - name: Copy files
               run: |
                   git config --global user.name "filmycart"
@@ -83,3 +87,6 @@ jobs:
                   git fetch
                   git checkout qa
                   git pull origin qa
+
+
+
