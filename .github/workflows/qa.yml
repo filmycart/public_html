@@ -4,19 +4,18 @@ on:
     branches: [ "qa" ]
     #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
 permissions:
-  contents: read
-jobs:  
-  stages:
-    - test
-  #  - deploy
-  test:
-    stage: test
-    only:
-      - qa
-  #    - production
-    script:
-      - git checkout qa
-      - git pull
+  contents: write
+jobs:
+  script:
+    - git pull origin qa
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Directory Permission
+        run: chmod -R 777 storage  
 # step-deploy-prod:
 #   stage: deploy
 #   only:
