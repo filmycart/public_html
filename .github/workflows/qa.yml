@@ -80,15 +80,15 @@ jobs:
               run: |
                   git config --global user.name "filmycart"
                   git config --global user.email "filmycartin@gmail.com"
-                  git clone https://github.com/filmycart/nachiyartraders
+                  git clone https://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@github.com/filmycart/nachiyartraders.git
                   git fetch
                   git checkout qa
                   git pull origin qa
-                  
-            - name: Copy repo
-                env:
-                  ACCESS_TOKEN: ${{ secrets.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 }}
-                    run: git clone "https://"$ACCESS_TOKEN"@github.com/filmycart/nachiyartraders.git"
+
+            # - name: Copy repo
+            #     env:
+            #       ACCESS_TOKEN: ${{ secrets.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 }}
+            #         run: git clone "https://"$ACCESS_TOKEN"@github.com/filmycart/nachiyartraders.git"
 
              # Copy the repository to the directory on the server/VPS used for the application
               # - name: Copy dist to VPS
