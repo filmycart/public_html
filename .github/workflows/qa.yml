@@ -1,24 +1,24 @@
-name: QA
-on:
-  push:
-    branches: [ "qa" ]
-    #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
-permissions:
-  contents: write
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Copy files
-          run:
-            git config --global user.name "filmycart"
-            git config --global user.email "filmycartin@gmail.com"
-            rsync -r --exclude=.git --exclude=.github
-      - name: Copy .env
-          run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Directory Permission
-          run: chmod -R 777 storage  
+# name: QA
+# on:
+#   push:
+#     branches: [ "qa" ]
+#     #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
+# permissions:
+#   contents: write
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Copy files
+#           run: |
+#             git config --global user.name "filmycart"
+#             git config --global user.email "filmycartin@gmail.com"
+#             rsync -r --exclude=.git --exclude=.github
+#       - name: Copy .env
+#           run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+#       - name: Directory Permission
+#           run: chmod -R 777 storage  
 # step-deploy-prod:
 #   stage: deploy
 #   only:
@@ -55,3 +55,32 @@ jobs:
   #           git checkout qa
   #           git pull origin qa                  
   
+name: Copy files to another branch
+on:
+    push:
+        branches:
+            - qa
+    workflow_dispatch:
+permissions:
+    contents: write
+    pages: write
+    id-token: write
+concurrency:
+    group: "pages"
+    cancel-in-progress: false
+jobs:
+    copy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout better-page
+              uses: actions/checkout@v4
+              with:
+                  ref: qa
+            - name: Copy files
+              run: |
+                  git config --global user.name "filmycart"
+                  git config --global user.email "filmycartin@gmail.com"
+                  rsync -r --exclude=.git --exclude=.github --exclude=about-me --exclude=node_modules --exclude=simplified . simplified/
+                  git fetch
+                  git checkout qa
+                  git pull origin qa
