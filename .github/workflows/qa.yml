@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 jobs:
+  script:
+    - echo "Start deploy"
+    - git pull
+    - echo "finish"
   build:
     runs-on: ubuntu-latest
     steps:
