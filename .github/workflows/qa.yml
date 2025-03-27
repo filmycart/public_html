@@ -55,35 +55,35 @@
   #           git checkout qa
   #           git pull origin qa                  
   
-name: Copy files to server
-on:
-    push:
-        branches:
-            - qa
-    workflow_dispatch:
-permissions:
-    contents: write
-    pages: write
-    id-token: write
-concurrency:
-    group: "pages"
-    cancel-in-progress: false
-jobs:
-    copy:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout qa
-              uses: actions/checkout@v4
-              with:
-                  ref: qa
-            - name: Copy files
-              run: |
-                  git config --global user.name "filmycart"
-                  git config --global user.email "filmycartin@gmail.com"
-                  git clone https://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@github.com/filmycart/nachiyartraders.git
-                  git fetch
-                  git checkout qa
-                  git pull origin qa
+# name: Copy files to server
+# on:
+#     push:
+#         branches:
+#             - qa
+#     workflow_dispatch:
+# permissions:
+#     contents: write
+#     pages: write
+#     id-token: write
+# concurrency:
+#     group: "pages"
+#     cancel-in-progress: false
+# jobs:
+#     copy:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout qa
+#               uses: actions/checkout@v4
+#               with:
+#                   ref: qa
+#             - name: Copy files
+#               run: |
+#                   git config --global user.name "filmycart"
+#                   git config --global user.email "filmycartin@gmail.com"
+#                   git clone https://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@github.com/filmycart/nachiyartraders.git
+#                   git fetch
+#                   git checkout qa
+#                   git pull origin qa
 
             # - name: Copy repo
             #     env:
@@ -105,3 +105,23 @@ jobs:
 
 
 
+name: "Repository Mirror: GitHub"
+
+on:
+  push:
+    branches:
+      - qa
+    workflow_dispatch:
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    name: "Mirror"
+    steps:
+      - uses: filmycart/nachiyartraders@qa
+        with:
+          source_repo: "https://github.com/filmycart/nachiyartraders.git"
+          source_user: "${{ secrets.filmycart }}"
+          source_token: "${{ secrets.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 }}"
+          # target_repo: "${{ secrets.MIRROR_TARGET_URL_GITHUB }}"
+          # target_user: "${{ secrets.MIRROR_TARGET_USER_GITHUB }}"
+          # target_token: "${{ secrets.MIRROR_TARGET_TOKEN_GITHUB }}"
