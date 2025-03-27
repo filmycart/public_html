@@ -5,10 +5,11 @@ on:
 permissions:
   contents: read
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example','.env')";
-    - name: Directory Permission
-      run: chmod -R 777 *      
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example','.env')";
+      - name: Directory Permission
+        run: chmod -R 777 *      
