@@ -80,6 +80,7 @@ jobs:
               run: |
                   git config --global user.name "filmycart"
                   git config --global user.email "filmycartin@gmail.com"
+                  git config --global github.token ${{ secrets.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 }}
                   git fetch
                   git checkout qa
                   git pull origin qa
