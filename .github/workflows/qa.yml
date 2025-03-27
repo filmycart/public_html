@@ -72,15 +72,31 @@ jobs:
     copy:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout better-page
+            - name: Checkout qa
               uses: actions/checkout@v4
               with:
                   ref: qa
-            - name: Copy files
+            - name: Copy files to server
               run: |
                   git config --global user.name "filmycart"
                   git config --global user.email "filmycartin@gmail.com"
-                  rsync -r --exclude=.git --exclude=.github --exclude=about-me --exclude=node_modules --exclude=simplified . simplified/
+                  rsync -r --exclude=.git
                   git fetch
                   git checkout qa
                   git pull origin qa
+                working-directory: /home/kz8vi9h6efqu/public_html/qa
+     
+
+
+        # Copy the repository to the directory on the server/VPS used for the application
+      # - name: Copy dist to VPS
+      #   uses: appleboy/scp-action@master
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     port: ${{ secrets.SSH_PORT }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     # Selecting all folders except "node_modules"
+      #     source: ".,!node_modules"
+      #     # The path is based on the directory where the user logged into the server starts
+      #     target: "~/app/gobarber-backend"
