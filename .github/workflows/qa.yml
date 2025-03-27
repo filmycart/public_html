@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: ssh and deploy
         uses: filmycart/nachiyartraders@qa
         with:
