@@ -1,0 +1,8 @@
+name: QA
+on:
+  push:
+    branches: [ "qa" ]
+permissions:
+  contents: read
+jobs:
+  runs-on: ubuntu-latest
