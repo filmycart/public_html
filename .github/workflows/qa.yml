@@ -6,6 +6,9 @@ on:
 permissions:
   contents: read
 jobs:
+  script:
+    - git fetch origin qa
+    - git pull qa
   # build:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -14,18 +17,18 @@ jobs:
   #       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
   #     - name: Directory Permission
   #       run: chmod -R 777 storage
-  copy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout qa
-        uses: actions/checkout@v4
-        with:
-          ref: qa
-      - name: Copy files
-          run: 
-            git config --global user.name "filmycart"
-            git config --global user.email "filmycartin@gmail.com"
-            rsync -r --exclude=.git --exclude=.github
-            git checkout qa
-            git pull origin qa                  
+  # copy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout qa
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: qa
+  #     - name: Copy files
+  #         run: |
+  #           git config --global user.name "filmycart"
+  #           git config --global user.email "filmycartin@gmail.com"
+  #           rsync -r --exclude=.git --exclude=.github
+  #           git checkout qa
+  #           git pull origin qa                  
   
