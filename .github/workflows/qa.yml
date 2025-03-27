@@ -55,35 +55,35 @@
   #           git checkout qa
   #           git pull origin qa                  
   
-name: Copy files to server
-on:
-    push:
-        branches:
-            - qa
-    workflow_dispatch:
-permissions:
-    contents: write
-    pages: write
-    id-token: write
-concurrency:
-    group: "pages"
-    cancel-in-progress: false
-jobs:
-    copy:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout qa
-              uses: actions/checkout@v4
-              with:
-                  ref: qa
-            - name: Copy files
-              run: |
-                  git config --global user.name "filmycart"
-                  git config --global user.email "filmycartin@gmail.com"
-                  git clone https://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@github.com/filmycart/nachiyartraders.git
-                  git fetch
-                  git checkout qa
-                  git pull origin qa
+# name: Copy files to server
+# on:
+#     push:
+#         branches:
+#             - qa
+#     workflow_dispatch:
+# permissions:
+#     contents: write
+#     pages: write
+#     id-token: write
+# concurrency:
+#     group: "pages"
+#     cancel-in-progress: false
+# jobs:
+#     copy:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout qa
+#               uses: actions/checkout@v4
+#               with:
+#                   ref: qa
+#             - name: Copy files
+#               run: |
+#                   git config --global user.name "filmycart"
+#                   git config --global user.email "filmycartin@gmail.com"
+#                   git clone https://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@github.com/filmycart/nachiyartraders.git
+#                   git fetch
+#                   git checkout qa
+#                   git pull origin qa
 
             # - name: Copy repo
             #     env:
@@ -103,5 +103,27 @@ jobs:
               #     # The path is based on the directory where the user logged into the server starts
               #     target: "/home/kz8vi9h6efqu/public_html/qa"      
 
+name: push-and-deploy-to-server
+
+on:
+  push:
+    branches: [ qa ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: ssh and deploy
+        uses: filmycart/nachiyartraders@qa
+        with:
+          host: ${{ secrets.github.com }}
+          username: ${{ secrets.filmycart }}
+          key: ${{ secrets.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 }}
+          port: 22
+          script: |
+            git pull origin qa
+            git status
 
 
