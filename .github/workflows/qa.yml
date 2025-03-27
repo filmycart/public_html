@@ -5,17 +5,18 @@ on:
     #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
 permissions:
   contents: read
-stages:
-  - test
-#  - deploy
-test:
-  stage: test
-  only:
-    - qa
-#    - production
-  script:
-    - git checkout qa
-    - git pull
+jobs:  
+  stages:
+    - test
+  #  - deploy
+  test:
+    stage: test
+    only:
+      - qa
+  #    - production
+    script:
+      - git checkout qa
+      - git pull
 # step-deploy-prod:
 #   stage: deploy
 #   only:
