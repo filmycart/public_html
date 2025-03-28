@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run script file
       run: |
-         chmod +x ./scripts/copy.sh
+         chmod +x /home/kz8vi9h6efqu/public_html/dev/.github/scripts/copy.sh
       shell: bash
 
 # name: Auto Deploy in VPS after Push in QA
