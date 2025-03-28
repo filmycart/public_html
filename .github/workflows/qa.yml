@@ -1,4 +1,4 @@
-name: Auto Deploy in VPS after Push in Production
+name: Auto Deploy in VPS after Push in QA
 
 on:
   push:
