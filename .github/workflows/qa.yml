@@ -57,8 +57,6 @@ aNIRErIw==' }}
             cd qa/
             git pull origin qa
 
-
-
 # name: QA
 # on:
 #   push:
