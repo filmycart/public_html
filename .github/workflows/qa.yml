@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run script file
       run: |
-        cd ../../qa/
+        cd /home/kz8vi9h6efqu/public_html/qa
         git checkout origin/qa /home/kz8vi9h6efqu/public_html/qa
       shell: bash
 
