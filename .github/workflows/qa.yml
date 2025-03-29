@@ -1,20 +1,58 @@
-name: Auto Deploy in VPS after Push in QA
+name: Deploy to VPS
+
 on:
   push:
     branches:
-      - qa
+      - qa  # or any branch you want to trigger on push
+
 jobs:
-  run_tests:
-    runs-on: ubuntu-20.04
+  deploy:
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Run script file
-      run: |
-        pwd
-        cd ./
-        git checkout origin/qa ./
-        git pull origin qa
-      shell: bash
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up SSH
+      - name: Set up SSH key
+        uses: filmycart/nachiyartraders@qa
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Copy files to VPS using SCP
+      - name: Copy files to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test"
+          scp -r * kz8vi9h6efqu@68.178.231.226:~/test
+
+      # Restart services if necessary (example for Node.js)
+      # - name: Restart app
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no user@your-vps-ip << 'EOF'
+      #       cd ~/test
+      #       # Restart service or run commands to apply changes, e.g., for Node.js
+      #       pm2 restart your-app || pm2 start your-app
+      #     EOF
+
+
+# name: Auto Deploy in VPS after Push in QA
+# on:
+#   push:
+#     branches:
+#       - qa
+# jobs:
+#   run_tests:
+#     runs-on: ubuntu-20.04
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Run script file
+#       run: |
+#         pwd
+#         cd ./
+#         git checkout origin/qa ./
+#         git pull origin qa
+#       shell: bash
 
 # chmod +x copy.sh
 # shell: bash
