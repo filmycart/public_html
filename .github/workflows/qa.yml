@@ -11,8 +11,8 @@ jobs:
 
     steps:
       # Checkout the repository
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       #- name: Copy repo
           # env:
@@ -20,28 +20,29 @@ jobs:
           #     run: git clone "https://"$ACCESS_TOKEN"@github.com/filmycart/nachiyartraders.git"
 
       #Copy the repository to the directory on the server/VPS used for the application
-      - name: Copy dist to VPS
-        uses: filmycart/nachiyartraders@qa
-        with:
-          host: "github.com"
-          username: "filmycart"
-          port: 22
-          key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw== }}"
-          # Selecting all folders except "node_modules"
-          source: "."
-          # The path is based on the directory where the user logged into the server starts
-          target: "/home/kz8vi9h6efqu/public_html/qa"    
-
-      # - name: ssh and deploy
+      # - name: Copy dist to VPS
       #   uses: filmycart/nachiyartraders@qa
       #   with:
-      #     host: ${{ secrets.github.com }}
-      #     username: ${{ secrets.filmycart }}
-      #     key: ${{ secrets.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 }}
+      #     host: "github.com"
+      #     username: "filmycart"
       #     port: 22
-      #     script: |
-      #       git pull origin qa
-      #       git status        
+      #     key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw== }}"
+      #     # Selecting all folders except "node_modules"
+      #     source: "."
+      #     # The path is based on the directory where the user logged into the server starts
+      #     target: "/home/kz8vi9h6efqu/public_html/qa"    
+
+      - name: ssh and deploy
+        uses: filmycart/nachiyartraders@qa
+        with:
+          host: ${{ secrets.github.com }}
+          username: ${{ secrets.filmycart }}
+          key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw== }}"
+          port: 22
+          script: |
+            git checkout qa
+            git pull origin qa
+            git status        
 
      # - name: Set up SSH key
      #    run: |
