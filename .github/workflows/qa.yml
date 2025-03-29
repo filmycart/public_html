@@ -8,6 +8,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: 'actions/checkout@v2'
+        with:
+          ref: qa
+          token: ${{ secrets.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 }}
       - name: execute ssh command via using private key
         uses: filmycart/nachiyartraders@qa
         with:
