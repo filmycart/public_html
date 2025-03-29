@@ -17,10 +17,7 @@ jobs:
           ref: qa
           token: "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"
       - name: Set up SSH Key and Deploy my App on Server
-        run: |
-          uses: filmycart/nachiyartraders@qa
-        env:
-          GITHUB_TOKEN: "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"
+        uses: filmycart/nachiyartraders@qa
         with:
           host: "68.178.231.226"
           username: "kz8vi9h6efqu"
