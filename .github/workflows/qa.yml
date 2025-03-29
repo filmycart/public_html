@@ -12,6 +12,7 @@ jobs:
       run: |
         pwd
         cd ./
+        pwd
         git checkout origin/qa ./
         git pull origin qa
       shell: bash
