@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: execute ssh command via using private key
-        uses: appleboy/ssh-action@master
+        uses: filmycart/nachiyartraders@qa
         with:
           host: "github.com"
           username: "filmycart"
