@@ -25,7 +25,7 @@ jobs:
           passphrase: "Nachiyar*1984"
           port: 22
           script: |
-            git config --global url."https://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:@github.com".insteadOf "https://github.com"
+#  git config --global url."https://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:@github.com".insteadOf "https://github.com"
             cd ./
             git checkout 
             git pull origin qa
