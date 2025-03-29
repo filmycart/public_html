@@ -16,7 +16,7 @@ jobs:
 
       # Set up SSH
       - name: Set up SSH key
-        uses: filmycart/nachiyartraders@qa
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
