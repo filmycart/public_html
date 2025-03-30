@@ -19,9 +19,8 @@ jobs:
         chmod 400 id_rsa
         eval "$(ssh-agent -s)"
         ssh-add id_rsa
-        sshpass -f 'Nachiyar*1984'
-      # ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226
-        ssh kz8vi9h6efqu@68.178.231.226 ls -la
+      #  ssh-passphrase -p 'Nachiyar*1984'
+        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 
       shell: bash
 
 
