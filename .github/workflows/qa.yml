@@ -16,8 +16,8 @@ jobs:
         ls
         git checkout origin/qa ./
         git pull origin qa
-        chmod 400 id_rsa
         eval "$(ssh-agent -s)"
+        chmod 400 id_rsa
         ssh-add id_rsa
         sshpass -f 'Nachiyar*1984' 
         ssh kz8vi9h6efqu@68.178.231.226 ls -la
