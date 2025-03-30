@@ -16,6 +16,7 @@ jobs:
         ls
         git checkout origin/qa ./
         git pull origin qa
+        eval "$(ssh-agent -s)"
         ssh-add id_rsa
         ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
       shell: bash
