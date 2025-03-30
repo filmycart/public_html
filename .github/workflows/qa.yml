@@ -11,9 +11,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run script file
       run: |
-        ls
         cd keys
         pwd
+        ls
         git checkout origin/qa ./
         git pull origin qa
         ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
