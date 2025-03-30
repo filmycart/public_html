@@ -14,7 +14,7 @@ jobs:
         cd keys/private/
         pwd
         ls
-        git checkout origin/qa ./
+        git checkout origin/qa
         git pull origin qa
         eval "$(ssh-agent -s)"
         ssh-add keys/private/id_rsa
