@@ -14,16 +14,11 @@ jobs:
         cd keys/private/
         pwd
         ls
-        git checkout origin/qa
+        git checkout origin/qa ./
         git pull origin qa
-  #     eval "$(ssh-agent -s)"
-  #     ssh-add keys/private/id_rsa
-        cat keys/private/id_rsa
-
-        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226
+        cat id_rsa
+        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
       shell: bash
-
-      #        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
 
       # ssh-keygen -t ed25519 -C "[info]" Copy.
       # ssh -T git@github.com Copy.
