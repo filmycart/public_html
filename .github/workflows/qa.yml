@@ -22,8 +22,14 @@ jobs:
         cd ./
         git checkout origin/qa ./
         git pull origin qa
-        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test"
+        ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
       shell: bash
+
+      # ssh-keygen -t ed25519 -C "[info]" Copy.
+      # ssh -T git@github.com Copy.
+      # eval "$(ssh-agent -s)" Copy.
+      # ssh-add [path-to-private-key] Copy.
+      # git clone git@host:username/repository.git Copy.
 
 # name: remote ssh
 # on:
