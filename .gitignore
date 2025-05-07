@@ -30,3 +30,7 @@ install.zip
 /nbproject
 /public/app-translations
 public/uploads.zip
+
+Dockerfile
+docker-compose.yml
+000-default.conf
