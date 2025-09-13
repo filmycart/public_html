@@ -190,7 +190,7 @@
 		        'user_query' => $request->get('message'),
 		    ), function($message) use ($request){
 		        $message->from($request->email);
-		        $message->to('MAIL_FROM_ADDRESS', 'Admin')->subject($request->get('subject'));
+		        $message->to(env('MAIL_FROM_ADDRESS'), 'Admin')->subject($request->get('subject'));
 		    });
 
 	        //

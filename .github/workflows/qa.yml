@@ -1,0 +1,433 @@
+
+name: Auto Deploy in VPS after Push in QA
+on:
+  push:
+    branches:
+      - qa
+jobs:
+  run_tests:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run script file
+      run: |
+        cd keys/private/
+        pwd
+        ls
+        git checkout origin/qa ./
+        git pull origin qa
+        eval "$(ssh-agent -s)"
+        chmod 400 id_rsa
+        ssh-add id_rsa
+        sshpass -f 'Nachiyar*1984' 
+        ssh kz8vi9h6efqu@68.178.231.226
+      shell: bash
+      # ssh-keygen -t ed25519 -C "[info]" Copy.
+      # ssh -T git@github.com Copy.
+      # eval "$(ssh-agent -s)" Copy.
+      # ssh-add [path-to-private-key] Copy.
+      # git clone git@host:username/repository.git Copy.
+
+#ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test" 
+
+# name: remote ssh
+# on:
+#   push:
+#     branches: [ qa ]
+
+# jobs:
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Repository
+#         uses: 'actions/checkout@v2'
+#         with:
+#           ref: qa
+#           token: ${{ secrets.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 }}
+#       - name: execute ssh command via using private key
+#         uses: filmycart/nachiyartraders@qa
+#         with:
+#           host: "github.com"
+#           username: "filmycart"
+#           key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw=="
+#           port: 22
+#           script:
+#             pwd
+
+# name: Deploy to VPS
+
+# on:
+#   push:
+#     branches:
+#       - qa  # or any branch you want to trigger on push
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # Checkout the repository
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+      #- name: Copy repo
+          # env:
+          #   ACCESS_TOKEN: ${{ secrets.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 }}
+          #     run: git clone "https://"$ACCESS_TOKEN"@github.com/filmycart/nachiyartraders.git"
+
+      #Copy the repository to the directory on the server/VPS used for the application
+      # - name: Copy dist to VPS
+      #   uses: filmycart/nachiyartraders@qa
+      #   with:
+      #     host: "github.com"
+      #     username: "filmycart"
+      #     port: 22
+      #     key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw== }}"
+      #     # Selecting all folders except "node_modules"
+      #     source: "."
+      #     # The path is based on the directory where the user logged into the server starts
+      #     target: "/home/kz8vi9h6efqu/public_html/qa"    
+
+      # - name: ssh and deploy
+      #   uses: filmycart/nachiyartraders@qa
+      #   with:
+      #     host: ${{ secrets.github.com }}
+      #     username: ${{ secrets.filmycart }}
+      #     key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw== }}"
+      #     port: 22
+      #     script: |
+      #       git checkout qa
+      #       git pull origin qa
+      #       git status        
+
+     # - name: Set up SSH key
+     #    run: |
+     #      echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          
+      # # Set up SSH
+      # - name: Set up SSH key
+      #   uses: webfactory/ssh-agent@v0.5.3
+      #   with:
+      #     ssh-private-key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw=="
+
+      # # Copy files to VPS using SCP
+      # - name: Copy files to VPS
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test"
+      #     scp -r * kz8vi9h6efqu@68.178.231.226:~/test
+
+      # Restart services if necessary (example for Node.js)
+      # - name: Restart app
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no user@your-vps-ip << 'EOF'
+      #       cd ~/test
+      #       # Restart service or run commands to apply changes, e.g., for Node.js
+      #       pm2 restart your-app || pm2 start your-app
+      #     EOF
+
+
+# name: Auto Deploy in VPS after Push in QA
+# on:
+#   push:
+#     branches:
+#       - qa
+# jobs:
+#   run_tests:
+#     runs-on: ubuntu-20.04
+#     steps:
+#     - uses: actions/checkout@v2
+
+#     # Set up SSH
+#     - name: Set up SSH key
+#       uses: webfactory/ssh-agent@v0.5.3
+#       with:
+#         ssh-private-key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw=="
+
+#     - name: Run script file
+#       run: |
+#         pwd
+#         cd ./
+#         git checkout origin/qa ./
+#         git pull origin qa
+#         ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test"
+#       shell: bash
+
+  # # Set up SSH
+  # - name: Set up SSH key
+  #   uses: webfactory/ssh-agent@v0.5.3
+  #   with:
+  #     ssh-private-key: "b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39hchHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaBE+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQkhh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYVskDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbvGFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrPGj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3SjQqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDqHTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZBTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrgy48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZsKvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0TU5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHOyokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2Ai2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X+WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3ctqad5aNIRErIw=="
+
+  # # Copy files to VPS using SCP
+  # - name: Copy files to VPS
+  #   run: |
+  #     ssh -o StrictHostKeyChecking=no kz8vi9h6efqu@68.178.231.226 "mkdir -p ~/test"
+  #     scp -r * kz8vi9h6efqu@68.178.231.226:~/test
+
+
+# chmod +x copy.sh
+# shell: bash
+
+# name: Auto Deploy in VPS after Push in QA
+
+# on:
+#   push:
+#     branches:
+#       - qa
+# jobs:
+#   deploy:
+#     name: Deploy project
+#     permissions:
+#       deployments: write
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Repository
+#         uses: 'actions/checkout@v2'
+#         with:
+#           ref: qa
+#           token: ${{ secrets.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 }}
+#       - name: Set up SSH Key and Deploy my App on Server
+#         run: |
+#         uses: filmycart/nachiyartraders@qa
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.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 }}
+#         with:
+#           host: ${{ secrets.68.178.231.226 }}
+#           username: ${{ secrets.kz8vi9h6efqu }}
+#           key: ${{ 'secrets.b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABB+kCp39h
+# chHNahKCOAHChtAAAAEAAAAAEAAAEXAAAAB3NzaC1yc2EAAAADAQABAAABAQCvER36BlaB
+# E+5ZO4KN62s12pM+BH0PgMLwLWMoSjGVkoYePFk8u5gNfgjzV6ICNdssIS2qZndMSRYQL9
+# ChWpXrbWf5x+dViLbMNgRoaFywf7MVF5lCzgsptJZQgl2qapxX7gmJ/iPCvT+Yx79paqUy
+# 4XLrTy2xo73jAbFSLi8xpeNVpAU8LRXwrYyZ06bHD/5cqNkux1lCaO+mw/2Tn32gWsPkQk
+# hh2neuT7AK4irp/qTK+G5lJIhnKKlpkPSh4O7acbGKqjV+SV8Ia/wF8JyWPK46jwjVfRYV
+# skDTpuuyQYZIl6h5Ljgfp12uNImLTuVi6gr6HwFtCVJZBmh1mFohAAADwJRAYxJKhXwOpT
+# 5OupbFg6IMpHdFkArJPryPqVsEd66sAiNut5EXZSTobUFApEtWYv/9Do1GeWPuQJwYcPPZ
+# 59Jdus1X0i5MuR3OHywVwTVJeVw7RSfoYE3fC4rAwXWse6wzCWTnfnYiogL58Cc4MoGnbv
+# GFnIsc4K5slLVpbTfPrM1uLgpEIuCQv9OeCURTuIsjolgYZqbbVHmaRCH+4e7cTFQQBMrP
+# Gj02ppBGlcpu51J/c6DGX1QfahcTANzIwpolulKCHdCqttv6kKtTi+hVJToS7ZBJblK3Sj
+# Qqve+1+l5HQpTptZAy9Qh3zMb4uxttpavLms78069dmSNc9thUUGq4eAYY/oeebmUhOrDq
+# HTEf7OCmb/2i0hslM/D8pvk9Bv/mQjIvrzPXSy7NQT9xfG7SMtViKhtKdT6T2Ql9P021aZ
+# BTaSe77+LtC6qZAMAQYSjoylvxvXakIF074j1rTq8v8xzlq+naVZmolGjoDKcPeWLxs7m1
+# for6ABxBJuiOJzfbQ3zkovL70AJBTdLdwM606tcy4OkxnzOqpBQCRIZrLhkhPCGRc8sdTq
+# 5BzZus6cWu0ugpHPMU+ufLvHnKkuB+XphWNW1s2+w/ZIYlbr+ivHqd0YLMNyn/uLecNTrg
+# y48JWg1EOBTEGZsggGkXroabRVfWHGONiGKE8OG9Go9NFjjFgZukywJO0hsYFBAe3koqGn
+# 9jEe/hR9/alLtUywRX6l9Q2OVUdKDHhsUP+bkr0ftZ7u105/YryJoPwflR4msxT7O1zVj3
+# I3WTaaCUQU9PN2hEn6M4rukw7Z6+15WN6G5XcbjSjbO+FZXW/hk0iwH4z1KTiYnoqgfaZs
+# KvfMpP4gmpjeKqPp6G79dnFDEF5Ha71x6EC3DhhfKkgkjdjpqAP9F6GhX4oCvZyUclmn0T
+# U5ufS9tk4aXZX+HOq4978WyZ+ygfbEKC/Ph08nem+fwYSKfB3m3EgTLw9VqfXwU2z7kvHO
+# yokiyFcNXwApXbathPPctFyY4lJa3fPjni6QzEJauZukyCyqLvc/X8fvXRvrDXsxn4FwLa
+# 4MFpKslROeogeoN+nlXSt8ikJ0qfUpfw3iW6/LiFrMB/02AOZXk+UN1hL4kSmBvAc0QV2A
+# i2iX5JaGYSLFrhH9qwUquPXOvXQpTLp1/Beur8IwFDp6ywoxQDVFD5211LHENkZXFufd+X
+# +WiaqAyrzGmaCvuYedhFt3jv3Hg07hNdbfsoMW1/LvoNHK2ZECxYy+zb38vltOww+kEln3
+# aNIRErIw==' }}
+#           passphrase: ${{ secrets.Nachiyar*1984 }}
+#           port: 22
+#           script: |
+#             git config --global url."https://${{ secrets.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 }}:@github.com".insteadOf "https://github.com"
+#             cd qa/
+#             git pull origin qa
+
+# name: QA
+# on:
+#   push:
+#     branches: [ "qa" ]
+#     #paths: ["home/kz8vi9h6efqu/public_html/qa/**"]
+# permissions:
+#   contents: write
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Copy files
+#           run: |
+#             git config --global user.name "filmycart"
+#             git config --global user.email "filmycartin@gmail.com"
+#             rsync -r --exclude=.git --exclude=.github
+#       - name: Copy .env
+#           run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+#       - name: Directory Permission
+#           run: chmod -R 777 storage  
+# step-deploy-prod:
+#   stage: deploy
+#   only:
+#     - production
+#   script:
+#     - git checkout production
+#     - git pull
+#   environment: production
+#   when: manual
+
+  # jobs:
+  #   script:
+  #     - git pull qa
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Copy .env
+  #       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+  #     - name: Directory Permission
+  #       run: chmod -R 777 storage
+  # copy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout qa
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: qa
+  #     - name: Copy files
+  #         run: |
+  #           git config --global user.name "filmycart"
+  #           git config --global user.email "filmycartin@gmail.com"
+  #           rsync -r --exclude=.git --exclude=.github
+  #           git checkout qa
+  #           git pull origin qa                  
+  
+# name: Copy files to server
+# on:
+#     push:
+#         branches:
+#             - qa
+#     workflow_dispatch:
+# permissions:
+#     contents: write
+#     pages: write
+#     id-token: write
+# concurrency:
+#     group: "pages"
+#     cancel-in-progress: false
+# jobs:
+#     copy:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout qa
+#               uses: actions/checkout@v4
+#               with:
+#                   ref: qa
+#             - name: Copy files
+#               run: |
+#                   git config --global user.name "filmycart"
+#                   git config --global user.email "filmycartin@gmail.com"
+#                   git clone https://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@github.com/filmycart/nachiyartraders.git
+#                   git fetch
+#                   git checkout qa
+#                   git pull origin qa
+
+            # - name: Copy repo
+            #     env:
+            #       ACCESS_TOKEN: ${{ secrets.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 }}
+            #         run: git clone "https://"$ACCESS_TOKEN"@github.com/filmycart/nachiyartraders.git"
+
+             # Copy the repository to the directory on the server/VPS used for the application
+              # - name: Copy dist to VPS
+              #   uses: filmycart/nachiyartraders@qa
+              #   with:
+              #   #  host: ${{ secrets.SSH_HOST }}
+              #     username: ${{ secrets.filmycart }}
+              #   #  port: ${{ secrets.SSH_PORT }}
+              #     key: ${{ secrets.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 }}
+              #     # Selecting all folders except "node_modules"
+              #     source: "."
+              #     # The path is based on the directory where the user logged into the server starts
+              #     target: "/home/kz8vi9h6efqu/public_html/qa"      
+
+# name: push-and-deploy-to-server
+
+# on:
+#   push:
+#     branches: [ qa ]
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: checkout repo
+#         uses: actions/checkout@v4
+#       - name: ssh and deploy
+#         uses: filmycart/nachiyartraders@qa
+#         with:
+#           host: ${{ secrets.github.com }}
+#           username: ${{ secrets.filmycart }}
+#           key: ${{ secrets.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 }}
+#           port: 22
+#           script: |
+#             git pull origin qa
+#             git status
+
+# name: Copy files to server
+# on:
+#     push:
+#         branches:
+#             - qa
+#     workflow_dispatch:
+# permissions:
+#     contents: write
+#     pages: write
+#     id-token: write
+# concurrency:
+#     group: "pages"
+#     cancel-in-progress: false
+# jobs:
+#     copy:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout qa
+#               uses: actions/checkout@v4
+#               with:
+#                   ref: qa
+#             - name: Copy files
+#               run: |
+#                   git config --global user.name "filmycart"
+#                   git config --global user.email "filmycartin@gmail.com"
+#                   git clone https://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@github.com/filmycart/nachiyartraders.git
+#                   git fetch
+#                   git checkout qa
+#                   git pull origin qa
+
+
+
+# This is a basic workflow to help you get started with Actions
+
+# name: digitalocean-pull-and-setup-env
+
+# # Controls when the workflow will run
+# on:
+#   # Triggers the workflow on push or pull request events but only for the $default-branch branch
+#   push:
+#     branches: [ "qa" ]
+#   # pull_request:
+#   #   branches: [ $default-branch ]
+
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
+
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-latest
+
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       # SSH into digitalocean droplet
+#       - name: executing remote ssh commands using password
+#         uses: filmycart/nachiyartraders@qa
+#         with:
+#           directory: /home/kz8vi9h6efqu/public_html/qa
+#           host: ${{ secrets.github.com }}
+#           username: ${{ secrets.filmycart }}
+#           key: ${{ secrets.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 }}
+
+#       # Runs a single command using the runners shell
+#       - name: Run a one-line script
+#         run: echo Hello, world!
+
+#       # Runs a set of commands using the runners shell
+#       - name: Run a multi-line script
+#         run: |
+#           echo Add other actions to build,
+#           echo test, and deploy your project.
+
