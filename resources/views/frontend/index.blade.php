@@ -36,7 +36,7 @@
                             @endforeach
                         </div>
                     @endif
-                    @if (count($featured_categories) > 0)
+                   <!--  @if (count($featured_categories) > 0)
                         <ul class="list-unstyled mb-0 row gutters-5">
                             @foreach ($featured_categories as $key => $category)
                                 <li class="minw-0 col-4 col-md mt-3">
@@ -54,7 +54,7 @@
                                 </li>
                             @endforeach
                         </ul>
-                    @endif
+                    @endif -->
                 </div>
 
                 @if($num_todays_deal > 0)

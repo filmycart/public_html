@@ -1,6 +1,6 @@
 /* Style The Dropdown Button */
 .dropbtn {
-	background-color: #87C232;
+	background-color: #006688;
 	color: white;
 	padding-top: 5px;
 	padding-left: 25px;
@@ -190,9 +190,15 @@
 .aiz-carousel .slick-prev {
     left: 0px !important;
     border-radius: 0 3px 3px 0 !important;
+    /*background: #B83140;*/
 }
 
 .aiz-carousel .slick-next {
     right: 0px !important;
     border-radius: 3px 0 0 3px !important;
+    /*background: #B83140;*/
+}
+
+.aiz-carousel .slick-dots .slick-active button {
+  background: #B83140;
 }
